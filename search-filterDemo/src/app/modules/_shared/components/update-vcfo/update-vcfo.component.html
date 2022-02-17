@@ -1,0 +1,121 @@
+<div class="modal-wrapper" >
+        <div class="modal-header goal-header">
+              <h1>{{title}}</h1>              
+              <button (click)="bsModalRef.hide()" class="cross-btn">
+                  <i class="fa fa-times"></i>
+              </button>
+          </div>
+          <div class="modal-body update-cfo-height">
+                <div class="row">
+                    <label class="col-sm-3 custom-lebel" for="username" >Username</label>
+                    <div class="col-sm-7">
+                        <input *ngIf ="openFor === 'Add'" placeholder="Enter username and press tab" type="text" [(ngModel)]="vcfoDetails.username" class="form-control" (blur)="searchCfo(vcfoDetails.username)"/>
+                        <input *ngIf ="openFor === 'Edit'" type="text" class="form-control custom-font-14" [(ngModel)]="vcfoDetails.username" [disabled]="true">
+                    </div>
+                </div>
+
+                <div class="row margin-top15">
+                    <label class="col-sm-3 custom-lebel" for="fullname">Full Name</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control custom-font-14" [(ngModel)]="vcfoDetails.fullname" [disabled]="true">
+                    </div>
+                </div>
+
+                <div class="row margin-top15">
+                    <label class="col-sm-3 custom-lebel" for="role">Role</label>
+                    <div class="col-sm-7">
+                        <div class="radio" >
+                            <label class="radio-inline">
+                                <input value="CFO"  type="radio" name="role" value="CFO" [(ngModel)]="vcfoDetails.role" [disabled] = "true">
+                                <span>CFO</span>
+                            </label>
+                            <label class="radio-inline">
+                                <input value="CFO Manager" type="radio" name="role" value="CFO Manager" [(ngModel)]="vcfoDetails.role" [disabled] = "true">
+                                <span>CFO Manager</span>
+                            </label>
+                            <label class="radio-inline">
+                                <input value="Analyst" type="radio" name="role" [(ngModel)]="vcfoDetails.role" [disabled] = "true">
+                                <span>Analyst</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row margin-top15">
+                    <label class="col-sm-3 custom-lebel">
+                        Status
+                    </label>
+                    <div class="col-sm-7 checkbox">
+                        <label>
+                            <input type="checkbox" checked="" [(ngModel)]="vcfoDetails.isActive" (ngModelChange)="checkStatus($event)" [disabled]="adDetailErrorMsg != ''">
+                            <span>Active</span> 
+                        </label>
+                    </div>
+                </div>
+
+                <div class="row margin-top15" *ngIf="openFor==='Edit' && ((vcfoDetails.role==='CFO'&& !isCFORoleChanged) || (isCFORoleChanged && vcfoDetails.role==='CFO Manager')) && adDetailErrorMsg === ''">
+                        <label class="col-sm-3 custom-lebel">
+                                Re-assign advisors to CFO
+                        </label>
+                        <div class="col-sm-4" *ngIf="advisorList?.length > 0">
+                            <ng-select #selectAdvisor
+                                [items]="advisorList"
+                                [multiple]="true"
+                                [closeOnSelect]="false"
+                                [searchable]="false"
+                                bindLabel="fullName"
+                                bindValue ="fullName"
+                                placeholder="Select Advisor"
+                                [(ngModel)]="advsiorSelected"
+                                (change)="advisorSelected($event)"
+                               >
+                                <ng-template ng-option-tmp let-item="item" let-index="index">                            
+                                    <b>{{item.repId}} | {{item.fullName}} </b>
+                                </ng-template>
+                            </ng-select>
+                        </div>
+                        <div class="col-sm-3" *ngIf="advisorList?.length > 0">
+                                <input [(ngModel)]="reassignCFO"
+                                id="advisor"
+                                [typeahead]="dataSource"                        
+                                (typeaheadOnSelect)="typeaheadOnSelect($event)" 
+                                (typeaheadNoResults)="typeaheadNoResults($event)"               
+                                typeaheadOptionField="fullname"
+                                class="form-control">    
+                            <div *ngIf="noResult">No Results Found</div>  
+                        </div> 
+                        <div class="col-sm-7 margin-top5" *ngIf="advisorList?.length <= 0">
+                            <p class="error-text">No advisor is assigned to this CFO</p>
+                        </div>
+                        
+                    </div>
+
+                <div class="row margin-top15" *ngIf="cfoExist && openFor==='Add'">
+                    <p class="error-text mx-auto">User Exists</p>
+                </div>
+                <div class="row error-text margin-top15" *ngIf="message != '' && openFor==='Add'">
+                    <p class="mx-auto">{{message}}</p>
+                </div>
+                <div class="row error-text margin-top15" *ngIf="adDetailErrorMsg != ''">
+                    <p class="mx-auto">{{adDetailErrorMsg}}</p>
+                </div>
+                <div class="row margin-top15" *ngIf="reassignWarningMessage === true && openFor==='Edit' && advisorList?.length > 0">
+                    <p class="mx-auto alert alert-warning warning_error">Please reassign all the advisors to any other Active CFO </p>
+                </div>
+                <div class="row margin-top15" *ngIf="allAdvisorMsg === true && openFor==='Edit' && vcfoDetails.role==='CFO'&& advisorList?.length > 0">
+                    <p class="mx-auto alert alert-warning warning_error">Please reassign all the advisors to any other Active CFO </p>
+                </div>
+                <div class="row margin-top15" *ngIf="enableSaveBtn === true && openFor==='Edit' && vcfoDetails.role==='CFO'">
+                    <p class="mx-auto alert alert-warning warning_error">Please select the CFO to reassign the selected advisors </p>
+                </div>
+                <div class="row error-text margin-top15" *ngIf="warningMessages?.length>0">
+                    <span class="mx-auto" *ngFor="let warnings of warningMessages">{{warnings.msg}}</span>
+                </div>
+                              
+            </div>
+            <div class="modal-footer custom-footer">
+                <input type="button" class="btn cancel-btn" value="Cancel" name="Cancel" (click)="bsModalRef.hide()">
+                <input type="button" class="btn custom-primary" value="Save" name="Save" (click)="saveCfo()" *ngIf="openFor === 'Add'"  [disabled]="enableSave || adDetailErrorMsg?.length>0">
+                <input type="button" class="btn custom-primary" value="Save" name="Save" (click)="editCfo()" *ngIf="openFor === 'Edit'" [disabled]="enableSave || adDetailErrorMsg?.length>0 || reassignWarningMessage === true || enableSaveBtn === true">
+            </div>
+</div>	

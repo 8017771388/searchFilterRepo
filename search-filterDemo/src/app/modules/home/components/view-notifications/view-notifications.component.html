@@ -1,0 +1,116 @@
+<div class="modal-wrapper">
+    <div class="modal-header goal-header">
+        <h1>{{title}}</h1>
+        <button (click)="hideNotes()" class="cross-btn">
+            <i class="fa fa-times"></i>
+        </button>
+    </div>
+    <div class="modal-body goal-body">
+        <div class="grid-details">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Task</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-template ngFor let-task [ngForOf]="notificationList" let-index="index" >
+                        <tr *ngIf="!task.isRead">
+                            <td><span (click)="viewNewNotes(task)" title="task.task">{{task.task|shortName:200}}</span></td>
+                        </tr>
+                        <tr *ngIf="task.isOpen && !task.isRead">
+                            <td colspan="2">
+                                <div class="expand-details">
+                                    <table>
+                                        <thead>
+                                            <th>Note</th>
+                                            <th>Created By</th>
+                                        </thead>
+                                        <tbody>
+                                            <tr [ngClass]="{'odd' : i%2 == 0, 'even' : i%2 != 0}" *ngFor="let notes of allNotes; let i = index">
+                                                <td>
+                                                    <span class="other-data" title="{{notes.note}}">{{notes.note}}</span>
+                                                </td>
+                                                <td>
+                                                    <span class="other-data" title="{{notes.createdBy}}">{{notes.createdBy}}</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </td>                            
+                        </tr>
+                    </ng-template>                   
+                </tbody>
+            </table>
+        </div>
+            
+    </div>
+    <div class="modal-footer custom-footer text-center">
+        <input type="button" class="btn custom-primary" value="Cancel" name="Cancel" (click)="hideNotes()">
+    </div>
+</div>
+
+
+
+<!-- 
+<div class="modal-wrapper">
+        <div class="modal-header goal-header">
+            <h1>{{title}}</h1>
+            <button (click)="hideNotes()" class="cross-btn">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body goal-body">
+                <div *ngIf="!showNotes">
+                    <div class="master-container"> 
+                        <div class="row sub-heading">
+                            <div class="col-8 ">
+                                <h2>Task</h2>
+                            </div>
+                            <div class="col-4">
+                                <h2>Action</h2>
+                            </div>
+                        </div>
+                        <div class="row collaps-container custom-row" *ngFor="let task of notificationList; let i = index">
+                                <div class="col-8">
+                                    <span class="other-data" title="{{task.task}}">{{task.task|shortName:100}}</span>
+                                </div>
+                                <div class="col-4">
+                                    <span (click)=viewNewNotes(task)>View Note</span>
+                                </div>     
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="showNotes">
+                    <div class="master-container"> 
+                        <div class="row sub-heading">
+                            <div class="col-8">
+                                <h2>Note</h2>
+                            </div>
+                            <div class="col-4">
+                                <h2>Created By</h2>
+                            </div>
+                        </div>
+                        <div class="row collaps-container custom-row" *ngFor="let notes of allNotes; let i = index">
+                            <div class="col-8">
+                                <span class="other-data" title="{{notes.note}}">{{notes.note}}</span>
+                            </div> 
+                            <div class="col-4">
+                                <span class="other-data" title="{{notes.createdBy}}">{{notes.createdBy}}</span>
+                            </div>  
+                        </div>
+                        <div class="row collaps-container custom-row" *ngIf="allNotes.length <= 0">
+                            <div class="col-12 text-center">
+                                <span class="other-data">No Notes Available</span>
+                            </div>  
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer custom-footer text-center">
+                <input type="button" class="btn custom-primary" value="Cancel" name="Cancel" (click)="hideNotes()">
+            </div>
+        </div> -->
+
+

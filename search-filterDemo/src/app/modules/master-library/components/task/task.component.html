@@ -1,0 +1,108 @@
+<div class="master-container">
+        <div class="row">
+            <div class="col-4">
+                    <label>Category</label>
+                    <select class="form-control custom-field" [(ngModel)]="selectedCategory" (ngModelChange)="getGoals($event)">
+                        <option value="">Select Category</option>
+                        <option *ngFor="let category of categoryList.data" [ngValue]="category" >
+                                {{category.category | shortName:50}}
+                        </option>                        
+                    </select>
+            </div>
+            <div class="col-4">
+                    <label>Goal</label>
+                    <select class="form-control custom-field" [(ngModel)]="selectedGoal" (ngModelChange)="getTasks($event, selectedGoal.goalId, null)">
+                        <option value="">Select Goal</option>
+                        <option *ngFor="let goal of goalList.data" [ngValue]="goal" >
+                                {{goal.goal | shortName:100}}
+                        </option>                        
+                    </select>
+            </div>
+            <div class="col-4">
+                <div class="search-container margin-top25">
+                    <button class="search-btn-submit" (click)="getTasks(selectedCategory.categoryId, selectedGoal.goalId, searchTask)">
+                        <i class="fa fa-search"></i>
+                    </button>
+                    <input class="form-control" id="myInput" type="text" placeholder="Search.." [(ngModel)]="searchTask" (keypress)="searchWithTxt($event)">
+                </div>
+                    
+            </div>
+        </div>
+        <div class="row sub-heading">
+            <div class="col-4 ">
+                <h2>{{ taskList.data.length > 0 ? 'Tasks' : (taskSearched || selectedGoal ? 'No Tasks Existing' : 'Select the category first, Goals second and/or tasks.')}}</h2>
+            </div>
+            <div class="col-4" *ngIf="taskList.data.length > 0">
+                <h2>Goals</h2>
+            </div>
+            <div class="col-4" *ngIf="taskList.data.length > 0">
+                <h2>Categories</h2>
+            </div>
+        </div>
+        <!-- <div class="collaps-container border-bottom-space" *ngIf="taskList.data.length > 0">
+            <div class="row">
+                <div class="col-4"><strong>Tasks</strong></div>
+                <div class="col-4 padding-left33"><strong>Goals</strong></div>
+                <div class="col-4 padding-left25"><strong>Category</strong></div>
+            </div>
+        </div> -->
+        <div class="collaps-container" *ngFor="let task of taskList.data; let i = index">
+            <div class="row custom-row" [ngClass]="{'active': task.isCollapsed}">
+                <div class="col-4">
+                    <span class="add-collaps-button" (click)="task.isCollapsed = !task.isCollapsed" title="{{task.task}}">{{task.task|shortName:100}}</span>
+                </div>
+                <div class="col-4">
+                    <span class="other-data" title="{{task.goal}}">{{task.goal|shortName:80}}</span>
+                </div>
+                <div class="col-4">
+                    <span class="other-data" title="{{task.category}}">{{task.category|shortName:50}}</span>
+                </div>
+            </div>
+            <div class="row" [ngClass]="{'bottom-border-space': task.isCollapsed}">
+                <div class="col-12 expand-container" id="collapseBasic" [collapse]="!task.isCollapsed">
+                    <div class="row">
+                        <div class="col-12">
+                            <label>Task Description:</label>
+                            <input type="text" class="form-control" [(ngModel)]="coppiedTask[i].task" (ngModelChange)="checkDuplicateTask($event, i)">
+                            <span class="err-msg" *ngIf="errMsg || coppiedTask[i].task == ''">{{ coppiedTask[i].task == '' ? 'Task name is required.' : errMsg}}</span>
+                        </div>
+                    </div>
+                    <div class="row margin-top15">
+                            <div class="col-12">
+                                <label>Assigned to</label>
+                                <div class="custom-radio">
+                                    <label class="form-check-label">
+                                        <input type="radio" class="form-check-input"  name="options{{i}}" value="vcfo" [(ngModel)]="coppiedTask[i].assignedTo" ng>CFO
+                                    </label>
+                                    <label class="form-check-label">
+                                        <input type="radio" class="form-check-input"  name="options{{i}}" value="advisor" [(ngModel)]="coppiedTask[i].assignedTo">Advisor
+                                    </label>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    <div class="row margin-top15">
+                        <div class="col-12">
+                            <label>Note:</label>
+                            <input type="text" class="form-control" [(ngModel)]="coppiedTask[i].note">
+                        </div>
+                    </div>
+                    <div class="row margin-top15">
+                        <div class="col-12 text-right">
+                            <input class="btn cancel-btn" name="Cancel" type="button" value="Cancel" (click)="task.isCollapsed = !task.isCollapsed">
+                            <input class="btn custom-primary margin-left5" name="Save" type="button" value="Update" (click)="updateTask(coppiedTask[i])" [disabled]="!coppiedTask[i].task || errMsg">
+                            <input class="btn cancel-btn margin-left5" name="Delete" type="button" value="Delete" (click)="deleteTask(task)">
+                        </div>
+                    </div>
+                </div>
+            </div>                       
+        </div>        
+        <div class="row container-footer">
+            <div class="col-12" *ngIf="selectedCategory && selectedGoal">
+                <button (click)="addTask()" [disabled]="!selectedGoal">
+                    <i class="fa fa-plus-circle"></i>
+                    <span>Add New Task</span>
+                </button>
+            </div>
+        </div>
+    </div>

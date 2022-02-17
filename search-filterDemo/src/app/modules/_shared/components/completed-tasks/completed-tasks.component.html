@@ -1,0 +1,64 @@
+<div class="modal-wrapper" >
+    <div class="modal-header goal-header">
+        <h1>{{title}}</h1>
+        <button (click)="bsModalRef.hide()" class="cross-btn">
+            <i class="fa fa-times"></i>
+        </button>
+    </div>
+    <div class="modal-body goal-body">
+        <div class="row">
+            <div class="col-12">
+                <h3>Goal</h3>
+                <span class="cfo-sub-headingText">
+                    <i class="fa fa-square {{goalConstant[goalDetail.goalStatus]}}" ></i>
+                    {{goalDetail.goalStatus}}
+                </span>
+                <p>
+                    {{goalDetail.goal}}
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <h3>Tasks</h3>
+                <div class="" *ngFor="let task of completedTask">
+                    <div class="row margin-top8">
+                        <div class="col-6">
+                            {{task.task}}
+                            <p class="blue-Text" *ngIf="task.noteId" (click)="task.visibleNote=!task.visibleNote;getAllNotes(task)">
+                                <span [hidden]="task.visibleNote">View {{task.status}} Notes</span>
+                                <span [hidden]="!task.visibleNote">Hide {{task.status}} Notes</span>
+                            </p>
+                        </div>
+                        <div class="col-3">
+                            <!-- <i class="fa fa-user"></i> -->
+                            <img src="assets/img/owner.svg" class="img-width" *ngIf="task.vcfoOrAdvisor.toLowerCase() == 'vcfo'" />
+                            <img src="assets/img/vCFOuser_Icon.svg" class="img-width"  *ngIf="task.vcfoOrAdvisor.toLowerCase() != 'vcfo'" />
+                            <span>{{task.vcfoOrAdvisor.toLowerCase() == 'vcfo' ? actionPlanDet.vcfo : 'Advisor'}}</span>
+                            
+                        </div>
+                        <div class="col-3">
+                            <em>Completed on: </em>
+                            <strong> {{task.dueDate | date}}</strong>
+                        </div>
+                    </div>  
+                    <div class="row" [hidden]="!task.visibleNote">
+                        <div class="col-12">
+                            <!-- <div class="loader" data-ng-show="task.noteLoading"></div> -->
+                            <div *ngIf="task.allNt?.length > 0 && !task.noteLoading">
+                                <div *ngFor="let notes of task.allNt" class="sub-notsContainer">
+                                    <!--<i class="fa fa-sticky-note"></i>-->
+                                    <img src="assets/img/notes.svg"  class="notes-i"/>
+                                    <strong class="label-strong">{{notes.createdBy}}</strong>
+                                    <span class="font-style-italic">{{notes.createdOn | date}}</span>
+                                    <p>{{notes.note}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>                      
+                </div>                                     
+            </div>
+        </div>        
+    </div>
+    
+</div>

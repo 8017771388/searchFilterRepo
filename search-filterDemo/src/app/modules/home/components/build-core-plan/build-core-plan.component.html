@@ -1,0 +1,139 @@
+<div class="build-core-plan container-fluid">
+        <nav  aria-label="breadcrumb">
+            <ol  class="breadcrumb">
+                <li  class="breadcrumb-item">
+                    <a href="#">Home</a>
+                </li>
+                <li aria-current="page" class="breadcrumb-item active">Create Plan</li>
+            </ol>
+        </nav>
+    <div class="build-core-plan-container">
+        <h1>Create Plan for <b> {{advisorName}} </b></h1>
+        <div class="row custom-row header-bg-color">
+            <div class="col-2 pl-0">
+                <h2>Select category</h2>
+            </div>
+            <div class="col-6">
+                <h2>Categories of focus</h2>
+            </div>
+            <div class="col-4">
+                <div class="search-container">
+                    <button class="search-btn-submit">
+                        <i class="fa fa-search"></i>
+                    </button>
+                    <input class="form-control" id="myInput" type="text" placeholder="Search Category/Goal" [(ngModel)]="searchTxt" (keyup)="searchCategoryAndGoal($event)">
+                </div>
+            </div>
+        </div>
+        <div class="category-grid" *ngIf="categoryGoalList">
+            <div *ngFor="let category of categoryGoalList.data.masterlibrary">
+                <div class="row custom-row custom-switches" [attr.aria-expanded]="!category.isCollapsed" aria-controls="collapseBasic" >
+                    <div class="col-2 pl-0">
+                        <ui-switch [(ngModel)]="category.switch" (change)="switchAccordian(category)"></ui-switch>
+                        <button class="transparent-button margin-left5" (click)="category.isCollapsed = !category.isCollapsed">
+                            <i class="fa fa-caret-right" *ngIf="!category.isCollapsed"></i>
+                            <i class="fa fa-caret-down" *ngIf="category.isCollapsed"></i>
+                        </button>
+                    </div>
+                    <div class="col-10">
+                        <span title="ABC123" class="goal ">{{category.category}}</span>
+                    </div>
+                </div>
+                <div class="expand-plan-details" id="collapseBasic" [collapse]="!category.isCollapsed">
+                    <div class="row">
+                        <div class="col-10 offset-2">
+                            <div class="link-text" (click)="addNewGoal(category)">
+                                <i class="fa fa-plus-circle"></i>
+                                <span>Add Custom Goal +</span>
+                            </div>
+                            <div class="custom-plan-table">
+                                <div class="row row-heading">
+                                    <div class="col-1 custom-col">
+                                        Add
+                                    </div>
+                                    <div class="col-9 custom-col">
+                                        Goal Name
+                                    </div>
+                                    <div class="col-2 custom-col">
+                                        Action
+                                    </div>
+                                </div>
+                                <div *ngFor="let goal of category.goals">
+                                    <div class="row plan-custom-row">
+                                        <div class="col-1 custom-col">
+                                            <input type="checkbox" (change)="addGoaltoTemp($event, category, goal)" [checked]="goal.checked">
+                                        </div>
+                                        <div class="col-9 custom-col">
+                                            <span> {{goal.goal}}</span>
+                                        </div>
+                                        <div class="col-2 custom-col">
+                                            <button class="custom-btn-Edit defaultText" (click)="addTask(category, goal)">
+                                                Add Task +
+                                            </button>
+                                        </div>
+                                      
+                                    </div>
+                                    <div class="category-Table-Container" *ngIf="goal.tasks.length > 0">
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Task</th>
+                                                    <th>Owner</th>
+                                                    <th>Due Date</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let task of goal.tasks">
+                                                    <td>{{task.task}}</td>
+                                                    <td>{{task.VCFOorAdvisor=='VCFO'?'CFO':task.VCFOorAdvisor}}</td>
+                                                    <td>{{task.duedate ? task.duedate : 'TBD'}}</td>
+                                                    <td>
+                                                        <button class="custom-btn-Edit" (click)="editTask(task,goal,category)">Edit Task</button> | <button class="custom-btn-Edit" (click)="deleteTask(task, goal)">Delete Task</button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div *ngIf="category.goals.length <= 0">
+                                    <div class="row plan-custom-row"><div class="col-sm-12 custom-col text-center">No Goal Available</div></div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            <!-- <div class="row custom-row custom-switches">
+                <div class="col-2 pl-0">
+                    <ui-switch (change)="isCollapsed"></ui-switch>
+                    <button class="transparent-button margin-left5">
+                        <i class="fa fa-caret-right"></i>
+                       
+                    </button>
+                </div>
+                <div class="col-10">
+                    <span title="ABC123" class="goal "> ABC123</span>
+                </div>
+            </div>
+            <div class="row custom-row custom-switches">
+                <div class="col-2 pl-0">
+                    <ui-switch (change)="isCollapsed"></ui-switch>
+                    <button class="transparent-button margin-left5">
+                        <i class="fa fa-caret-right"></i>
+                        
+                    </button>
+                </div>
+                <div class="col-10">
+                    <span title="ABC123" class="goal "> ABC123</span>
+                </div>
+            </div> -->
+       </div>
+       <div class="category-footer text-right">
+            <input class="btn cancel-btn" name="Cancel" type="button" value="Cancel" (click)="cancel()">
+            <input class="btn custom-primary margin-left5" name="Save" type="button" value="Save" [disabled]="!saveBtnEnabled" (click)="savePlan()">
+       </div>
+    </div>
+</div>

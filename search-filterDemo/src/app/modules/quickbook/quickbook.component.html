@@ -1,0 +1,109 @@
+<!-- 
+<div class="wrapper">
+<nav class="sidebar" [ngClass]="status ? 'active' : ''">
+    <div class="toggle-button">
+            <button type="button" id="sidebarCollapse" class="custom-button" (click)="clickEvent()">
+                <span>Hide Quick Views</span>
+            </button>
+    </div>
+    <div class="sidebar-header">
+        <h3>Quick Views</h3>
+    </div>
+   
+    <ul class="side-bar-list">
+        <li (click) ="gridData('mytask')" [ngClass]="{'white':alladvisor=='mytask'}">OnBoarding</li> -->
+        <!-- <li (click) ="gridData('myadvisor')"  [ngClass]="{'white':alladvisor=='myadvisor'}">Import Data</li>
+        <li (click) ="gridData('alladvisor')"  [ngClass]="{'white':alladvisor=='alladvisor'}" >COA Maintainance</li> -->
+        <!-- <li class="dropdown">
+            <a href="#" class="nav-item nav-link dropdown-toggle" data-toggle="dropdown" role="button"
+                aria-haspopup="true" aria-expanded="true"> <span class="nav-label">OnBoarding </span> <span
+                    class="caret"></span></a>
+
+            <ul class="dropdown-menu" style="width:260px;">
+                <li><a routerLink="/quickbook/advisoronboarding">Upload Mapped QBO instance</a></li>
+                <li> <a routerLink="/quickbook/coamasterdata">Upload COA Master Data</a></li>
+            </ul>
+        </li> 
+
+        <li class="nav-item">
+            <a class="nav-link collapsed text-truncate" href="#submenu1" data-toggle="collapse" data-target="#submenu1"><i class="fa fa-table"></i> 
+                <span class="d-none d-sm-inline">OnBoarding</span></a>
+            <div class="collapse" id="submenu1" aria-expanded="false">
+                <ul class="flex-column pl-2 nav">
+                    <li><a  class="nav-item nav-link" routerLink="/quickbook/quickbook/advisoronboarding">Upload Mapped QBO instance</a></li>
+                <li> <a  class="nav-item nav-link" routerLink="/quickbook/quickbook/coamasterdata">Upload COA Master Data</a></li>
+                </ul>
+            </div>
+        </li>
+
+        <li> <a class="nav-item nav-link" routerLink="/quickbook/quickbook/importadvisor"> Import Data</a></li>
+        <li> <a class="nav-item nav-link" routerLink="/quickbook/quickbook/coamaintenance">COA Maintainance</a></li>
+    </ul>
+</nav>
+<div class="home-content" >
+    <div class="container-fluid"> 
+
+
+
+
+
+
+    <router-outlet></router-outlet>
+</div>
+</div>
+</div> -->
+
+
+<div class="admin-container container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+           <!--  <tabset>
+                <tab heading="Upload Mapped QBO instance">
+                    <div class="tab-container">
+                        <app-advisoronboarding></app-advisoronboarding>
+                    </div>
+                </tab>
+                <tab heading="Upload COA Master Data">
+                    <div class="tab-container">
+                             <app-coamasterdata></app-coamasterdata>
+                    </div>
+                </tab>
+                <tab heading="Manage COA Maintainance">
+                    <div class="tab-container">
+                             <app-coamaintenance></app-coamaintenance>>
+                    </div>
+                </tab>
+               
+                <tab heading="Import Data">
+                    <div class="tab-container">
+                             <app-importadvisor></app-importadvisor>
+                    </div>
+                </tab>
+                <tab heading="JE View">
+                    <div class="tab-container">
+                             <app-jeview></app-jeview>
+                    </div>
+                </tab>
+            </tabset> -->
+
+            <div class="tabs-resp-custom">
+                <ul class="nav nav-tabs">
+                  <li class="nav-item" >
+                  <a class="nav-link" routerLink="/quickbook/quickbook/importadvisor" routerLinkActive="active">Import Data</a>
+                  </li>
+                  <li class="nav-item" > <a  class="nav-item nav-link" routerLink="/quickbook/quickbook/coamasterdata">Upload COA Master Data</a></li>
+                  <li class="nav-item">
+                  <a class="nav-link" routerLink="/quickbook/quickbook/coamaintenance" routerLinkActive="active">COA Maintainance</a>
+                  </li>
+
+                  <li class="nav-item"><a  class="nav-link" routerLink="/quickbook/quickbook/advisoronboarding">Upload Mapped QBO instance</a></li>
+                  <li class="nav-item"><a  class="nav-link" routerLink="/quickbook/quickbook/jeview">JE View</a></li>
+                </ul>
+                <div class="tab-content">
+                  <div class="tab-pane active">
+                    <router-outlet></router-outlet>
+                  </div>
+              </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,146 @@
+<div class="row" *ngIf="!showAdvisorSubsriptionForm">  
+    <div class="col-4 input-group input-group-search"> 
+        <label for="grid-search" class="sr-only"></label> 
+        <div class="reset-field">
+            <input class="form-control grid-search" [(ngModel)]="searchText" placeholder="Search Advisors" type="text" >
+            <i class="clear-search fa fa-remove" (click)="searchText = ''; searchAdvisor()"></i>
+        </div>
+        <span class="input-group-btn advisor-panel-search" >
+            <button class="btn text-search-button" (click)="searchAdvisor()">
+                <i class="fa fa-search"></i>
+            </button>
+        </span>
+    </div>
+</div>
+<!-- <div class="row margin-top15">
+    <div class="col-12">
+        <div class="dx-button dx-button-mode-contained  dx-button-has-text" role="button">
+            <div class="dx-button-content" (click)="addAdvisor()"><i class="dx-icon dx-icon-add"></i><span class="dx-button-text">Add new</span></div>
+        </div>  
+        <div class="col-2 input-group">
+                <input type="button" class="export float-right" value="Rep ID Report">
+        </div>
+    </div> 
+</div> -->
+
+<div class="row margin-top15" *ngIf="showAdvisorSubsriptionForm">
+    <div class="col-12">
+        <app-advisor-subcription (Esubscription)="subscriptionHandler($event)"  [repId]='editFormData.repId' [vcfoName]='editFormData.vcfoName' [subscriptionObject]='editFormData.subscriptionObject'></app-advisor-subcription>
+    </div>
+</div>
+<div class="row margin-top15" *ngIf="!showAdvisorSubsriptionForm"> 
+        <div class="col-12">
+                    <div class="dx-button dx-button-mode-contained  dx-button-has-text" role="button" *ngIf="userRole == cfoManager">
+                        <div class="dx-button-content" (click)="addAdvisor()"><i class="dx-icon dx-icon-add"></i><span class="dx-button-text">Add new</span></div>
+                    </div>  
+                     <div class="col-2 offset-10">
+                            <input type="button" class="export float-right" value="Rep ID Report" (click)="onExporting($event)">
+                    </div>
+                <div class="total-records mt-1"> <strong>{{totalCount}}</strong> Advisor<span *ngIf="totalCount> 1">s</span> </div>
+                <dx-data-grid 
+                        #gridContainer
+                        id="gridContainer"
+                        [dataSource]="dataSource"
+                        [masterDetail]="{ enabled: true, template: 'detail' }"
+                        [showColumnLines]="true"
+                        [showRowLines]="true"
+                        [showBorders]="true"
+                        [rowAlternationEnabled]="true"
+                        [columnAutoWidth]="true"
+                        [cacheEnabled]="false">
+                        <dxo-remote-operations
+                        [paging]="true" [filtering]="true" [sorting]="true">
+                        </dxo-remote-operations>
+                        <dxo-paging [pageSize]="15"></dxo-paging>
+                        <dxo-pager
+                            [showPageSizeSelector]="false"
+                            [allowedPageSizes]="[5, 10, 15]"
+                            [showInfo]="true">
+                        </dxo-pager>
+                        <dxo-header-filter 
+                            [visible]="showHeaderFilter">
+                        </dxo-header-filter>
+                        <!--<dxi-column dataField="cwAccess"  [width]="100" [allowFiltering]="false"  caption="CW Access" cellTemplate="chkBox">
+                                <div *dxTemplate="let a of 'chkBox'">
+                                    <input  type="checkbox">                                                          
+                                </div>                                           
+                        </dxi-column>--> 
+                        <dxi-column dataField="advisor" [width]="200" caption="Full Name" [allowSorting]="true" [calculateFilterExpression]="calculateFilterExpression">
+                                <dxo-header-filter [dataSource]="filterData.advisor" ></dxo-header-filter>
+                        </dxi-column>
+                        <dxi-column dataField="repId" caption="REP ID" [allowSorting]="true" [calculateFilterExpression]="calculateFilterExpression">
+                                <dxo-header-filter [dataSource]="filterData.repId" ></dxo-header-filter>
+                        </dxi-column>
+                        <dxi-column dataField="contractstartdate" caption="Contract Start Date" [allowFiltering]="false" [allowSorting]="true" dataType="date" format='MMM d, yyyy'></dxi-column>
+                        <dxi-column dataField="vcfo" caption="CFO" [allowSorting]="true">
+                                <dxo-header-filter [dataSource]="filterData.vcfo" ></dxo-header-filter>
+                        </dxi-column>
+                        <dxi-column dataField="includeId" caption="Include ID" [allowFiltering]="false" [allowSorting]="false" cellTemplate="IncludeIdField">
+                            <div *dxTemplate="let iF of 'IncludeIdField'">
+                                <input [disabled]="true" [(ngModel)]="iF.data.includeId" type="checkbox">
+                            </div>
+                        </dxi-column>
+                        <dxi-column dataField="ownershippercentage" caption="Ownership %" [allowFiltering]="false" [allowSorting]="true"></dxi-column>
+                        <dxi-column [allowFiltering]="false" [allowSorting]="false" dataField="cwAccess" caption="Is Active?" cellTemplate="MasterAction">
+                                <dxo-header-filter [dataSource]="filterData.isactive" ></dxo-header-filter>
+                                <div *dxTemplate="let a of 'MasterAction'">
+                                    <input (change)="getValue(a)" [(ngModel)]="a.data.cwAccess" type="checkbox" [disabled]="(a.data.ASATEmailTrigger === '1' || a.data.ASATEmailTrigger === '2') || userRole === analyst">  
+
+                                </div>
+                        </dxi-column> 
+                        <dxi-column dataField="cwAccessStatus" caption="CW Access Status" [allowFiltering]="false" [allowSorting]="false"></dxi-column>
+                        <dxi-column  [allowFiltering]="false" [allowSorting]="false" cellTemplate="Action">  
+                            <div *dxTemplate="let a of 'Action'">
+                                <button mdbBtn type="button" (click)="showEditForm(a)" color="blue-grey" mdbWavesEffect class="custom-edit">
+                                    <i class="fa fa-edit"></i>
+                                    Edit
+                                </button>         
+                            </div>
+                         </dxi-column>
+                         
+                            <div *dxTemplate="let AD of 'detail'">
+                                
+                                <dx-data-grid [dataSource]="getTasks(AD.key, 'grid')"
+                                              [showColumnLines]="true"
+                                              [showRowLines]="true"
+                                              [showBorders]="true"
+                                              [rowAlternationEnabled]="true"
+                                              [columnAutoWidth]="true">
+                                    <dxo-paging [pageSize]="15"></dxo-paging>
+                                    <dxo-pager [showPageSizeSelector]="false"
+                                               [allowedPageSizes]="[5, 10, 20]"
+                                               [showInfo]="true">
+                                    </dxo-pager>
+                                    <dxi-column dataField="cwAccess" [width]="100" caption="CW Access" cellTemplate="ActionCheckbox">
+                                        <div *dxTemplate="let check of 'ActionCheckbox'">
+                                            <input (change)="selectedAdvisor(check.data, AD)" [hidden]="check.data.hidden" [disabled]="(AD.data.cwAccess === false || AD.data.cwAccess === 0) || check.data.cwAccessFlag === false" [(ngModel)]="check.data.cwAccess" type="checkbox">
+                                            
+                                            
+                                        </div>
+                                    </dxi-column>
+                                    <dxi-column dataField="cwAccessStatus" [width]="250" caption="CW Access Status"></dxi-column> 
+                                    <dxi-column dataField="repid" [width]="150" caption="REP ID"></dxi-column>
+                                    <dxi-column dataField="advisor" caption="Full Name" ></dxi-column>
+                                    <dxi-column dataField="includeId" caption="Include ID" [width]="150" cellTemplate="IncludeIdSecondary">
+                                        <div *dxTemplate="let a of 'IncludeIdSecondary'">
+                                            <input type="checkbox" [disabled]="true" [(ngModel)]="a.data.includeId">
+                                        </div>
+                                    </dxi-column>
+                                    <dxi-column dataField="ownership" [width]="150" caption="Ownership %"></dxi-column>
+
+                                </dx-data-grid>  
+
+                                <div class="margin-top15 d-flex justify-content-center"> 
+                                    <button type="button" [disabled]="(AD.data.ASATEmailTrigger === '1' || AD.data.ASATEmailTrigger === '2') || userRole === analyst" name="save" (click)="saveAsatChanges(AD)"> Grant/Revoke ClientWorks Access </button> 
+
+                                </div> 
+                                                                        
+                            </div>                         
+                                                         
+                    </dx-data-grid>
+                    <div class="request-alert alert alert-info alert-dismissible fade show" data-auto-dismiss role="alert" auto-close="500" *ngIf="actionReq">
+                        <button class="close" aria-label="close" data-dismiss="alert">&times;</button>
+                        <span id="alertMsg">Action Requested</span>
+                    </div>
+        </div>
+</div>

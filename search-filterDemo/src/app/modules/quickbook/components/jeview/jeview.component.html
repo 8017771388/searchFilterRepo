@@ -1,0 +1,74 @@
+<div class="row  mt-4">
+    <div class="col-sm-auto offset-sm-4 font-weight-bold">
+        <label>Select Advisor:</label>
+    </div>
+    <div *ngIf="advisorimportresponse" style="padding-left:32px;" class="col-sm-2">
+        <select class="form-control" (change)="onAdvisorImporExportEntityDetailsChange($event.target.value)" [(ngModel)]="selectedvalue">
+        <option value="">Select Advisor</option>
+        <option *ngFor="let advimpres of advisorimportresponse.listAdvisorImporExportEntityDetails" value="{{advimpres.advisorEmail}}_{{advimpres.lplAdvisorRelmID}}">{{advimpres.advisorEmail}}</option>
+        
+      </select>
+
+    </div>
+
+
+</div>
+
+<div class="row" style="padding-top: 21px;" *ngIf="selectedvalue && journalEntryMasterChildDetails">
+    <div class="col-sm-auto offset-sm-4 font-weight-bold">
+        <label>Select Journal Entry:</label>
+    </div>
+    <div class="col-sm-2">
+        <select class="form-control" disabled [(ngModel)]="selectedMSvalue">
+        <option value="">All</option>
+        <option value="unProcessed">UnProcessed </option>
+        <option value="Processed">Processed </option>
+        
+      </select>
+
+    </div>
+</div>
+
+<div class="row col-centered" *ngIf="journalEntryMasterChildDetails">
+    <div class="col-md-8 offset-md-2">
+    <dx-data-grid id="gridContainer"
+    [dataSource]="journalEntryMasterChildDetails.JournalEntries"
+    [masterDetail]="{ enabled: true, template: 'detail' }"
+    keyExpr="id"
+    [showColumnLines]="true"
+        [showRowLines]="true"
+    [showBorders]="true">
+
+    <dxi-column dataField="id" caption="JournalEntry ID"></dxi-column>
+   
+    <dxi-column dataField="totalAmt" caption="Total Amount"></dxi-column>
+    
+    <dxi-column dataField="docNumber" caption="Doc Number"></dxi-column>
+    <dxi-column dataField="transactionDate" caption="Transaction Date"></dxi-column>
+    
+
+    <div *dxTemplate="let line of 'detail'">
+        <!-- <div class="master-detail-caption">{{employee.data.FirstName + " " + employee.data.LastName + "'s Tasks:"}}</div> -->
+        <dx-data-grid 
+            [dataSource]="getLineDetails(line.key)"
+            [showColumnLines]="true"
+            [showRowLines]="true"
+            [showBorders]="true"
+            [columnAutoWidth]="true">
+            <dxi-column dataField="id" caption="JournalEntryLine ID"></dxi-column>
+               
+               
+                <dxi-column dataField="amount" caption="Amount"></dxi-column>
+                <dxi-column dataField="detailType" caption="DetailType"></dxi-column>
+                <dxi-column dataField="postingType" caption="PostingType"></dxi-column>
+                <dxi-column dataField="accountName" caption="AccountName"></dxi-column>
+                <dxi-column  dataField="accountId" caption="AccountId"></dxi-column>
+                <dxi-column dataField="entityType"  caption="EntityType"></dxi-column>
+                <dxi-column  dataField="entityId" caption="EntityId"></dxi-column>
+                <dxi-column  dataField="entityName" caption="EntityName"></dxi-column>
+                <dxi-column dataField="description"  caption="Description"></dxi-column>
+        </dx-data-grid>       
+    </div>
+</dx-data-grid>
+</div>
+</div>

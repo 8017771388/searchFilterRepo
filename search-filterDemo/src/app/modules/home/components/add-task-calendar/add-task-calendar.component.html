@@ -1,0 +1,78 @@
+<div class="modal-wrapper">
+    <div class="modal-header add-header">
+        <span>Add Task</span>
+     </div>
+    <div class="modal-body goal-body">
+            <div class="row custom-calendar-row">
+                <div class="col-12">
+                    <label>Select Goal</label>
+                    <select class="form-control calendar-field" [(ngModel)]="goalInfo" (ngModelChange)="goalSelected($event)">
+                        <option disabled value="">Select Goal</option>
+                        <option *ngFor="let goal of goals" [ngValue]="goal">{{goal.goal}}</option>                     
+                    </select>
+                </div>
+            </div>
+            <div class="row custom-calendar-row" *ngIf="masterLibraryTask !== null">
+                <div class="col-2 padding-right-0">
+                    <input class="form-check-input custom-radio" type="radio" name="master" [(ngModel)]="goalType" value="Master"
+                    (change)="taskName=''">
+                    <label for="master" class="padding-left18">
+                        Master Library
+                    </label>
+                </div>
+                <div class="col-10">
+                        <input class="form-check-input custom-radio" type="radio" name="master" [(ngModel)]="goalType" value="Custom"
+                        (change)="taskName=''">
+                        <label for="master" class="padding-left18">
+                            Custom Task
+                        </label>
+                </div>
+            </div>
+           <div class="row custom-calendar-row">
+               <div class="col-6">
+                    <label>Task Name</label>
+                    <input type="text" placeholder="Task Name" class="form-control calendar-field" (ngModelChange)="checkDuplicateTask($event)" [(ngModel)]="taskName" *ngIf="goalType === 'Custom' || masterLibraryTask === null">
+
+                    <ng-select #selectTask *ngIf="goalType === 'Master' && masterLibraryTask !== null"
+                        [items]="masterLibraryTask"
+                        [multiple]="true"
+                        [closeOnSelect]="false"
+                        [searchable]="false"
+                        bindLabel="task"
+                        bindValue ="task"
+                        placeholder="Select Task"
+                        [(ngModel)]="taskName"
+                        (change)="taskSelected($event)">
+                        <ng-template ng-option-tmp let-item="item" let-index="index">                           
+                            <b>{{item.task | shortName:100}}</b>
+                        </ng-template>
+                    </ng-select>
+                    <span class="error-text" *ngIf="allTaskExist && goalType !== 'Custom'">
+                        <span>All the tasks have already been added</span>
+                    </span>
+                    <span class="error-text" *ngIf="taskExist && goalType !== 'Master'">
+                        <span> Task already exists</span>
+                    </span>
+               </div>
+               <div class="col-6">
+                <label>Assign To</label>
+                <select class="form-control calendar-field" [(ngModel)]="assignedTo">
+                    <option value="VCFO" [disabled]="advisorInfo.vcfoUsername === null">CFO</option>   
+                    <option value="Advisor" [selected]="true" [disabled]="userType === analyst">Advisor</option>                      
+                </select>
+               </div>
+           </div>
+           <div class="row custom-calendar-row">
+              <div class="col-12">
+                <label>Notes</label>
+                <textarea  class="form-control calendar-field text-area-resize" id="comment" name="note" rows="5" [(ngModel)]="note"></textarea>
+              </div>
+           </div>
+    </div>
+    <div class="modal-footer">
+        <div class="bottun-container">
+            <input type="button" class="btn btn-outline-primary btn-cancel" value="Cancel" name="Cancel" (click)="hideTask()">
+            <input type="button" class="btn btn-primary btn-submit" value="Add" name="Add" (click)="addTask()" [disabled]="!goalInfo || !taskName">
+        </div>
+    </div>
+</div>

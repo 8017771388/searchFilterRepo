@@ -1,0 +1,325 @@
+
+    <div class="row">
+
+        <div class="col-sm-6" style="padding-top: 11px;">
+            <!--  <input
+  type="file"
+  #file
+ 
+  (change)="onFilesAdded($event.target.files)"/> -->
+            <form>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" (change)="onFilesAdded($event.target.files)" id="customFile">
+                    <label class="custom-file-label" for="customFile">{{fileName}}</label>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-sm-4 alert alert-danger alert-dismissible" *ngIf="Fileerror">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a> {{Fileerror}}
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-sm-2 pt-3">
+            <button id="btnAccept" type="submit" value="Upload" class="btn btn-success" [disabled]="!isvalidfile" (click)="UploadAdvisorMappingDetails()">Upload</button>
+        </div>
+
+        <div class="col-sm-2 pt-3">
+            <!-- <a href="#"  class="btn btn-primary btn-lg active" role="button" aria-pressed="true">DownLoad CSV Template File</a> -->
+            <a title="DownLoad CSV Template File" role="button" aria-pressed="true" href="assets/QBOMappedInstances.csv" class="btn btn-primary" target="_self" download><i class="fa fa-download"></i> CSV Template</a>
+        </div>
+        <!-- <div class="col-sm-2" style="padding-top: 11px;">
+    <input type="button" value="Reject" class="btn btn-danger" />
+   </div>
+ -->
+
+    </div>
+
+
+
+
+    <div class="row" *ngIf="mappedInstancesResponse">
+        <div class="pb-2 mt-3 mb-2">
+            <h4>Uploaded QBO Mapped Instances Details</h4>
+        </div>
+    </div>
+        <div class="row" *ngIf="mappedInstancesResponse">
+        <div class="table-responsive-lg verticalscroll col-md-12" *ngIf="mappedInstancesResponse.listMappedData">
+            <table id="dtBasicExample" class="table table-striped table-bordered" cellspacing="0">
+                <thead>
+                    <tr class="info bg-light text-dark">
+
+                        <th class="th-sm">
+                            Advisor Name
+                        </th>
+                        <th class="th-sm">
+                            Advisor Email
+                        </th>
+
+                        <th class="th-sm">
+                            Advsior CompanyID
+                        </th>
+
+                        <th class="th-sm">
+                            LPL Advisor Name
+                        </th>
+                        <th class="th-sm">
+                            LPL Advisor Email
+                        </th>
+                        <th class="th-sm">
+                          LPL Advsior CompanyID
+                        </th>
+
+
+
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr *ngFor="let mapressmod of mappedInstancesResponse.listMappedData">
+                        <td data-toggle="tooltip"  data-placement="top"  [title]="mapressmod.advisorName">{{mapressmod.advisorName}}</td>
+                        <td data-toggle="tooltip"  data-placement="top"  [title]="mapressmod.advisorEmail">{{mapressmod.advisorEmail}} </td>
+                        <td data-toggle="tooltip"  data-placement="top"  [title]="mapressmod.advsiorRealmID">{{mapressmod.advisorRelmId}} </td>
+                        <td data-toggle="tooltip"  data-placement="top"  [title]="mapressmod.lplAdvisorName">{{mapressmod.lplAdvisorName}}</td>
+                        <td data-toggle="tooltip"  data-placement="top"  [title]="mapressmod.lplAdvisorEmail">{{mapressmod.lplAdvisorEmail}}</td>
+                        <td data-toggle="tooltip"  data-placement="top"  [title]="mapressmod.lplAdvsiorRealmID">{{mapressmod.lplAdvisorRelmId}} </td>
+                    </tr>
+
+                    <!--  <tr>
+            <td>Customer</td>
+            <td>2 </td>
+            <td>0 </td>
+            <td>Success </td>
+            <td></td>
+    
+        </tr>
+         
+        <tr>
+          <td>Vendor</td>
+          <td>2 </td>
+          <td>0 </td>
+          <td>Success </td>
+          <td></td>
+    
+      </tr>
+       
+      <tr>
+        <td>Chart Of Account</td>
+        <td>2 </td>
+        <td>0 </td>
+        <td>Success </td>
+        <td></td>
+    
+    </tr> -->
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="backdrop" [ngStyle]="{'display':display}"></div>
+
+    <div class="modal" tabindex="-1" role="dialog"  [ngStyle]="{'display':display}">
+
+    
+        <div class="modal-dialog modal-lg modal-width" role="document">
+
+        
+            <div class="modal-content">
+
+            
+                <div class="modal-header">
+                
+                    <h4 class="modal-title">Advisor Mapping Details</h4>
+                    <button type="button" class="close" aria-label="Close" (click)="onCloseHandled()"><span aria-hidden="true">&times;</span></button>
+
+                </div>
+
+            
+                <div class="modal-body">
+
+                
+                    <div class="row" *ngIf="advisorQBOMappingResponse">
+                        <div class="table-responsive-lg" style="padding-left: 30px;">
+                            <table id="dtBasicExample" class="table table-striped table-bordered" cellspacing="0">
+                                <thead>
+                                    <tr class="info">
+                                        <th class="th-sm">
+                                            LPLAdvisorName
+                                        </th>
+                                        <th class="th-sm">
+                                            LPLAdvisorEmail
+                                        </th>
+                                        <th class="th-sm">
+                                            LPLAdvsiorCompanyID
+                                        </th>
+                                        <th class="th-sm">
+                                            LPLAdvisorClientID
+                                        </th>
+                                        <th class="th-sm">
+                                            LPLAdvisorClientSecret
+                                        </th>
+                                        <th class="th-sm">
+                                            AdvisorName
+                                        </th>
+                                        <th class="th-sm">
+                                            AdvisorEmail
+                                        </th>
+
+                                        <!--  <th class="th-sm">
+                  AdvsiorRealmID
+                </th>
+      
+  
+                <th class="th-sm">
+                  AdvisorClientID
+                </th>
+      
+                <th class="th-sm">
+                  AdvisorClientSecret
+                </th> -->
+                                        <th class="th-sm">
+                                            Error Message
+                                        </th>
+
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <tr *ngFor="let advresmod of advisorQBOMappingResponse.listAdvisorQBOMappingResponseModel">
+                                        <!-- <td data-toggle="tooltip" data-placement="top"> <span [className]="advresmod.error.length>0 ? 'icon-check' : 'icon-check'"></span> </td> -->
+                                        <td data-toggle="tooltip"  data-placement="top"  [title]="advresmod.advisorImportExportMappingModel.lplAdvisorName">{{advresmod.advisorImportExportMappingModel.lplAdvisorName}}</td>
+                                        <td data-toggle="tooltip"  data-placement="top"  [title]="advresmod.advisorImportExportMappingModel.lplAdvisorEmail">{{advresmod.advisorImportExportMappingModel.lplAdvisorEmail}}</td>
+                                        <td data-toggle="tooltip"  data-placement="top"  [title]="advresmod.advisorImportExportMappingModel.lplAdvsiorRealmID">{{ (advresmod.advisorImportExportMappingModel.lplAdvsiorRealmID.length>6)? (advresmod.advisorImportExportMappingModel.lplAdvsiorRealmID | slice:0:6)+'..':(advresmod.advisorImportExportMappingModel.lplAdvsiorRealmID)}}
+                                            </td>
+                                        <td data-toggle="tooltip"  data-placement="top"  [title]="advresmod.advisorImportExportMappingModel.lplAdvisorClientID">{{ (advresmod.advisorImportExportMappingModel.lplAdvisorClientID.length>6)? (advresmod.advisorImportExportMappingModel.lplAdvisorClientID | slice:0:6)+'..':(advresmod.advisorImportExportMappingModel.lplAdvisorClientID)}}
+                                            </td>
+                                        <td data-toggle="tooltip"  data-placement="top"  [title]="advresmod.advisorImportExportMappingModel.lplAdvisorClientSecret">{{ (advresmod.advisorImportExportMappingModel.lplAdvisorClientSecret.length>6)? (advresmod.advisorImportExportMappingModel.lplAdvisorClientSecret | slice:0:6)+'..':(advresmod.advisorImportExportMappingModel.lplAdvisorClientSecret)}}</td>
+                                        <td data-toggle="tooltip"  data-placement="top"  [title]="advresmod.advisorImportExportMappingModel.advisorName">{{advresmod.advisorImportExportMappingModel.advisorName}}</td>
+                                        <td data-toggle="tooltip"  data-placement="top"  [title]="advresmod.advisorImportExportMappingModel.advisorEmail">{{advresmod.advisorImportExportMappingModel.advisorEmail}} </td>
+                                        <!-- <td data-toggle="tooltip" data-placement="top" [title]="advresmod.advisorImportExportMappingModel.advsiorRealmID">{{  (advresmod.advisorImportExportMappingModel.advsiorRealmID.length>6)? (advresmod.advisorImportExportMappingModel.advsiorRealmID | slice:0:6)+'..':(advresmod.advisorImportExportMappingModel.advsiorRealmID)}} </td>
+                <td data-toggle="tooltip" data-placement="top" [title]="advresmod.advisorImportExportMappingModel.advisorClientID">{{  (advresmod.advisorImportExportMappingModel.advisorClientID.length>6)? (advresmod.advisorImportExportMappingModel.advisorClientID | slice:0:6)+'..':(advresmod.advisorImportExportMappingModel.advisorClientID)}} </td>
+                <td data-toggle="tooltip" data-placement="top" [title]="advresmod.advisorImportExportMappingModel.advisorClientSecret">{{  (advresmod.advisorImportExportMappingModel.advisorClientSecret.length>6)? (advresmod.advisorImportExportMappingModel.advisorClientSecret | slice:0:6)+'..':(advresmod.advisorImportExportMappingModel.advisorClientSecret)}}</td> -->
+                                        <td data-toggle="tooltip"  data-placement="top"  [title]="advresmod.error">{{ (advresmod.error.length>6)? (advresmod.error | slice:0:6)+'..':(advresmod.error)}}</td>
+
+                                    </tr>
+
+                                    <!--  <tr>
+              <td>Customer</td>
+              <td>2 </td>
+              <td>0 </td>
+              <td>Success </td>
+              <td></td>
+      
+          </tr>
+           
+          <tr>
+            <td>Vendor</td>
+            <td>2 </td>
+            <td>0 </td>
+            <td>Success </td>
+            <td></td>
+      
+        </tr>
+         
+        <tr>
+          <td>Chart Of Account</td>
+          <td>2 </td>
+          <td>0 </td>
+          <td>Success </td>
+          <td></td>
+      
+      </tr> -->
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- <div class="row" *ngIf="advisorQBOMappingResponse">
+      
+  </div> -->
+
+                    </div>
+
+            
+                <div class="modal-footer">
+
+                    <button id="btnAccept" type="submit" value="Submit" class="btn btn-success" (click)="InsertAndUpdateAdvisorMappingDetails()">Submit</button>
+
+
+                    <button type="button" class="btn btn-danger" (click)="onCloseHandled()">Cancel</button>
+
+
+                </div>
+
+                </div>
+            <!-- /.modal-content -->
+
+            </div>
+        <!-- /.modal-dialog -->
+
+    </div>
+    <!-- /.modal !-->
+
+
+    <!-- /.modal displaySaveResponse !-->
+    <div class="backdrop" [ngStyle]="{'display':displaySaveResponse}"></div>
+    <div class="modal" tabindex="-1" role="dialog"  [ngStyle]="{'display':displaySaveResponse}">
+
+    
+        <div class="modal-dialog modal-lg" role="document">
+
+        
+            <div class="modal-content">
+
+            
+                <div class="modal-header">
+                
+                    <h4 class="modal-title">Advisor Mapping Response </h4>
+                    <button type="button" class="close" aria-label="Close" (click)="onsavedAdvisorMappingResponseCloseHandled()"><span aria-hidden="true">&times;</span></button>
+
+                </div>
+
+            
+                <div class="modal-body" *ngIf="savedAdvisorMappingResponse">
+
+                
+                    <!-- <div class="row" *ngIf="savedAdvisorMappingResponse">
+            <div class="col-md-6"> -->
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">Total Records :
+                            <span class="badge badge-primary badge-pill">{{savedAdvisorMappingResponse.totalRecords}}</span></li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">Valid Records :
+                            <span class="badge badge-primary badge-pill">{{savedAdvisorMappingResponse.validRecords}}</span></li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">Invalid Records :
+                            <span class="badge badge-primary badge-pill">{{savedAdvisorMappingResponse.invalidrecords}}</span> </li>
+                    </ul>
+
+
+
+                    <!-- </div>
+          </div> -->
+
+                </div>
+
+
+            
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-danger" (click)="onsavedAdvisorMappingResponseCloseHandled()">Close</button>
+
+                </div>
+
+                </div>
+            <!-- /.modal-content -->
+
+            </div>
+        <!-- /.modal-dialog -->
+
+    </div>
+    <!-- /.modal !-->
+

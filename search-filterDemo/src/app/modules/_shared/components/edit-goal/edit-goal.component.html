@@ -1,0 +1,57 @@
+<div class="modal-wrapper" >
+        <div class="modal-header goal-header">
+            <h1>{{title}}</h1>
+            <button (click)="bsModalRef.hide()" class="cross-btn">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body goal-body">
+            <div class="row">
+                <div class="col-12">
+                    <label>Category</label>
+                    <input type="text" [(ngModel)]="goalDetails.category" class="form-control custom-field"  [disabled]="true"/>
+                </div>
+            </div>
+            <div class="row margin-top5">
+                <div class="col-12">
+                    <label>Goal</label>
+                    <input type="text" [(ngModel)]="goalDetails.goal" class="form-control custom-field"  [disabled]="true"/>
+                </div>   
+            </div>
+            <div class="row margin-top5">                
+                <div class="col-12">
+                    <label>Goal Target</label>
+                    <input type="text" [(ngModel)]="goalDetails.goalDescription" class="form-control custom-field" maxlength="300"/>
+                </div> 
+            </div>
+            <div class="row margin-top5">
+                <div class="col-6">
+                    <label>Goal Completion Quarter</label>
+                    <select class="form-control custom-field" [(ngModel)]="goalDetails.goalDueQuarter" (ngModelChange)="getQuarter($event)">
+                        <option value="" disabled>Select Quarter</option>
+                         <option *ngFor="let quarter of quarters; let i = index" [ngValue]="quarter" title="{{quarter}}" >
+                                 {{quarter}}
+                         </option> 
+                     </select>
+                     <span class="error-text" *ngIf="noQuarterSelected">Please select goal completion quarter</span>                 
+
+                </div>
+                <div class="col-6" >
+                    <label>Completion Year</label> 
+                    <select class="form-control custom-field" [(ngModel)]="goalDetails.goalDueQuarterYr" (ngModelChange)="getQuarterYear($event)">
+                        <option value="" disabled>Select Year</option>
+                         <option *ngFor="let year of completionYear" [ngValue]="year" title="{{year}}">
+                                 {{year}}
+                         </option> 
+                     </select> 
+                     <span class="error-text" *ngIf="noYearSelected">Please select goal completion year</span>                 
+                  
+                </div>
+                
+        </div>
+        </div>
+        <div class="modal-footer custom-footer">
+                <input type="button" class="btn cancel-btn" value="Cancel" name="Cancel" (click)="bsModalRef.hide()">
+                <input type="button" class="btn custom-primary" value="Save" name="Save" (click)="updateGoal()" [disabled]="noQuarterSelected || noYearSelected">
+        </div>
+</div>

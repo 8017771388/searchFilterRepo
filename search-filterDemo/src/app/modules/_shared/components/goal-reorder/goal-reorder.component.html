@@ -1,0 +1,27 @@
+<div class="modal-wrapper" >
+    <div class="modal-header goal-header">
+        <h1>{{title}}</h1>
+        <button (click)="bsModalRef.hide()" class="cross-btn">
+            <i class="fa fa-times"></i>
+        </button>
+    </div>
+    <div class="modal-body goal-body">
+        <div class="row">
+            <div class="col-12">
+                <div cdkDropList #goalList = "cdkDropList"
+                [cdkDropListData] = "allGoals"
+                (cdkDropListDropped) = "onDrop($event)">
+                    <div *ngFor ="let goal of allGoals" cdkDrag>
+                        <i class="fa fa-arrows" aria-hidden="true"></i>
+                        {{goal.goal}}
+                    </div>
+                </div>
+            </div>
+        </div>        
+        
+    </div>
+    <div class="modal-footer custom-footer">
+            <input type="button" class="btn cancel-btn" value="Cancel" name="Cancel" (click)="bsModalRef.hide()">
+            <input type="button" class="btn custom-primary" value="Save" name="Save" (click)="saveOrder()">
+    </div>
+</div>

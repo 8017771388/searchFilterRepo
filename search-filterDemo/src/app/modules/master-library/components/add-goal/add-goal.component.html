@@ -1,0 +1,29 @@
+<div class="modal-wrapper">
+        <div class="modal-header goal-header">
+            <h1>{{title}}</h1>
+            <button (click)="bsModalRef.hide()" class="cross-btn">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body goal-body">
+            <div>
+                <div class="row margin-top5">
+                    <div class="col-12">
+                        <label>Goal Description</label>
+                        <input type="text" [(ngModel)]="goalDesc" class="form-control" [ngClass]="{'err-txtbox': errMsg}" (ngModelChange)="checkDuplicateGoal($event)" maxlength="300"/>
+                        <span class="err-msg" *ngIf="errMsg">{{errMsg}}</span>
+                    </div>
+                </div>
+                <div class="row margin-top5">
+                    <div class="col-12">
+                        <label>More Information</label>
+                        <input type="text" [(ngModel)]="moreInformation" class="form-control" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer custom-footer">
+                <input type="button" class="btn cancel-btn" value="Cancel" name="Cancel" (click)="bsModalRef.hide()">
+                <input type="button" class="btn custom-primary" value="Add" name="Add" (click)="addGoal()" [disabled]="!goalDesc || errMsg">
+        </div>
+</div>

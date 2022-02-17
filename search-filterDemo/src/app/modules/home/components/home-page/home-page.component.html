@@ -1,0 +1,450 @@
+<div class="wrapper">
+    <!-- Sidebar  -->
+    <app-side-bar (navChange)="navHandler($event)"></app-side-bar>
+    <!-- Page Content  -->
+    <div class="home-content">
+        <div class="container-fluid">
+            <!-- <div class="row my-task-tab">
+
+               <div class="col-1 active" (click)="switchViewFunc('T')" [ngClass]="{'active': switchView}">
+                    <i class="fa fa-table" aria-hidden="true"></i>
+                    <span>Table View</span>
+               </div>
+               <div class="col-2" (click)="switchViewFunc('C')" [ngClass]="{'active': !switchView}">
+                    <i class="fa fa-calendar-o" aria-hidden="true"></i>
+                    <span>Calender View</span>
+                </div>
+               <div class="col-1 notification" [ngClass]="{'deactive' : notificationCount <= 0}" (click)="viewNotification()">
+                    <i class="fa fa-bell" aria-hidden="true"></i>
+                    <span *ngIf="notificationCount >= 0">{{ notificationCount > 0 ? notificationCount : '' }}</span>
+                </div> 
+                
+           </div>  -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="due-date form-inline">
+                        <!-- <label>Search : </label> -->
+
+                        <div class="col-4 input-group input-group-search">
+                            <label for="grid-search" class="sr-only"></label>
+                            <div class="reset-field">
+                                <input
+                                    class="form-control grid-search"
+                                    [(ngModel)]="searchText"
+                                    placeholder="Search"
+                                    type="text"
+                                />
+                                <i
+                                    class="clear-search fa fa-remove"
+                                    (click)="searchText = ''; searchAdvisor()"
+                                ></i>
+                            </div>
+                            <span class="input-group-btn advisor-panel-search">
+                                <button
+                                    class="btn text-search-button"
+                                    (click)="searchAdvisor()"
+                                >
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </span>
+                        </div>
+
+                        <!-- <label> From </label>
+                         <div class="input-group custom-input-group">
+                             <input type="text" class="form-control" #fromDate="bsDatepicker"  bsDatepicker (bsValueChange)="onValueChange('from',$event)"> 
+                             <span class="input-group-btn">
+                                 <button type="button" (click)="fromDate.toggle()" class="btn btn-default calender-custom" ng-click="isDatepickerOpen = !isDatepickerOpen">
+                                     <i class="fa fa-calendar"></i>
+                                 </button>
+                             </span>
+                         </div>
+                         <label>To </label>
+                         <div class="input-group custom-input-group">
+                             <input type="text" #toDate="bsDatepicker" class="form-control" bsDatepicker (bsValueChange)="onValueChange('to',$event)">
+                             <span class="input-group-btn">
+                                 <button type="button" (click)="toDate.toggle()" class="btn btn-default calender-custom" ng-click="isDatepickerOpen = !isDatepickerOpen">
+                                     <i class="fa fa-calendar"></i>
+                                 </button>
+                             </span>
+                         </div>
+                         <div class="input-group clear" [hidden]="isHide">
+                            <button mdbBtn type="button" class="btn cancel-btn" color="blue-grey " (click)="clearDates()" mdbWavesEffect>Clear</button>
+                        </div> -->
+                        <!-- ngIf: dueDateForm.$valid -->
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <div class="total-records">
+                        <span
+                            ><strong>{{ totalCount }}</strong>
+                            {{
+                                totalCount > 1
+                                    ? totalCountNames
+                                    : totalCountName
+                            }}</span
+                        >
+                    </div>
+                    <div
+                        *ngIf="this.gridType == 'mytask'"
+                        class="notification"
+                        [ngClass]="{ deactive: notificationCount <= 0 }"
+                        (click)="viewNotification()"
+                    >
+                        <i
+                            class="fa fa-bell"
+                            aria-hidden="true"
+                            title="{{
+                                notificationCount + ' unread task notifications'
+                            }}"
+                        ></i>
+                        <span *ngIf="notificationCount > 0">{{
+                            notificationCount > 0 ? notificationCount : ""
+                        }}</span>
+                    </div>
+                </div>
+                <div class="col-8 status-info">
+                    <span class="bullet darkgrey textdsn"> Total Tasks</span>
+                    <span class="bullet redcolor textdsn"> Past Due </span>
+                    <span class="bullet bluecl textdsn"> Due Within Week </span>
+                    <span class="bullet darkBlueGrey textdsn">
+                        Future Tasks
+                    </span>
+                    <span class="bullet green textdsn"> Completed </span>
+                    <span class="bullet gray textdsn"> Not Started </span>
+                </div>
+            </div>
+
+            <div class="row" *ngIf="this.gridType != 'mytask'">
+                <div class="col-12">
+                    <dx-data-grid
+                        #gridContainer1
+                        id="gridContainer1"
+                        [dataSource]="dataSource"
+                        [masterDetail]="{ enabled: true, template: 'detail' }"
+                        [showColumnLines]="true"
+                        [showRowLines]="true"
+                        [showBorders]="true"
+                        [sorting]="false"
+                        [rowAlternationEnabled]="true"
+                        [cacheEnabled]="false"
+                    >
+                        <dxo-remote-operations
+                            [paging]="true"
+                            [filtering]="true"
+                        >
+                        </dxo-remote-operations>
+                        <dxo-paging [pageSize]="15"></dxo-paging>
+                        <dxo-pager
+                            [showPageSizeSelector]="false"
+                            [allowedPageSizes]="[5, 10, 15]"
+                            [showInfo]="true"
+                        >
+                        </dxo-pager>
+                        <dxo-header-filter [visible]="showHeaderFilter">
+                        </dxo-header-filter>
+
+                        <dxi-column
+                            dataField="advisor"
+                            caption="Advisor"
+                            [calculateFilterExpression]="
+                                calculateFilterExpression
+                            "
+                        >
+                            <dxo-header-filter
+                                [dataSource]="filterData.advisor"
+                            ></dxo-header-filter>
+                        </dxi-column>
+                        <dxi-column
+                            dataField="repid"
+                            caption="RepID"
+                            [width]="70"
+                        >
+                            <dxo-header-filter
+                                [dataSource]="filterData.repid"
+                            ></dxo-header-filter>
+                        </dxi-column>
+                        <dxi-column dataField="vcfo" caption="CFO">
+                            <dxo-header-filter
+                                [dataSource]="filterData.vcfo"
+                            ></dxo-header-filter>
+                        </dxi-column>
+                        <dxi-column
+                            dataField="openTasks"
+                            [width]="90"
+                            caption="Open Task"
+                            [allowFiltering]="false"
+                        ></dxi-column>
+                        <dxi-column
+                            dataField="completedTasks"
+                            [width]="125"
+                            caption="Completed Task"
+                            [allowFiltering]="false"
+                        ></dxi-column>
+                        <dxi-column
+                            dataField="overallstatus"
+                            [width]="200"
+                            caption="Status Of Tasks"
+                            [allowFiltering]="false"
+                            [allowSorting]="false"
+                            cellTemplate="status"
+                        >
+                            <div *dxTemplate="let os of 'status'">
+                                <span
+                                    title="Total Tasks"
+                                    class="taskCircle darkgrey"
+                                    >{{
+                                        os.data.overallstatus.totalTasks
+                                    }}</span
+                                >
+                                <span
+                                    title="Past Due"
+                                    class="taskCircle redcolor"
+                                    >{{ os.data.overallstatus.pastDue }}</span
+                                >
+                                <span
+                                    title="Due Within Week"
+                                    class="taskCircle bluecl"
+                                    >{{
+                                        os.data.overallstatus.dueThisWeek
+                                    }}</span
+                                >
+                                <span
+                                    title="Future Tasks"
+                                    class="taskCircle darkBlueGrey"
+                                    >{{
+                                        os.data.overallstatus.futureTasks
+                                    }}</span
+                                >
+                                <span
+                                    title="completed"
+                                    class="taskCircle green"
+                                    >{{ os.data.overallstatus.completed }}</span
+                                >
+                                <span
+                                    title="Not Started"
+                                    class="taskCircle gray"
+                                    >{{
+                                        os.data.overallstatus.notStarted
+                                    }}</span
+                                >
+                            </div>
+                        </dxi-column>
+                        <dxi-column
+                            caption="Action"
+                            [width]="150"
+                            [allowFiltering]="false"
+                            [allowSorting]="false"
+                            cellTemplate="Action"
+                        >
+                            <div *dxTemplate="let data of 'Action'">
+                                <a
+                                    href="#"
+                                    *ngIf="data.data.actionPlanId"
+                                    [routerLink]="[
+                                        '/home/core-plan/',
+                                        data.data.repid,
+                                        data.data.advisor
+                                    ]"
+                                    class="blue"
+                                    >View Goals</a
+                                >
+                                <a
+                                    href="#"
+                                    *ngIf="!data.data.actionPlanId"
+                                    [routerLink]="[
+                                        '/home/build-core-plan/',
+                                        data.data.repid,
+                                        data.data.advisor,
+                                        data.data.overallstatus.vcfousername
+                                            ? data.data.overallstatus
+                                                  .vcfousername
+                                            : 'CFO'
+                                    ]"
+                                    class="blue"
+                                    >Build Core Plan</a
+                                >
+                            </div>
+                        </dxi-column>
+
+                        <div *dxTemplate="let AD of 'detail'">
+                            <dx-data-grid
+                                [dataSource]="getTasks(AD.key)"
+                                [showColumnLines]="true"
+                                [showRowLines]="true"
+                                [showBorders]="true"
+                                [rowAlternationEnabled]="true"
+                                [columnAutoWidth]="true"
+                            >
+                                <dxo-paging [pageSize]="15"> </dxo-paging>
+                                <dxo-pager
+                                    [showPageSizeSelector]="false"
+                                    [allowedPageSizes]="[5, 10, 20]"
+                                    [showInfo]="true"
+                                >
+                                </dxo-pager>
+                                <dxo-header-filter [visible]="showHeaderFilter">
+                                </dxo-header-filter>
+                                <dxi-column
+                                    dataField="task"
+                                    cellTemplate="task"
+                                >
+                                    <div *dxTemplate="let ts of 'task'">
+                                        <a
+                                            class="taskName"
+                                            (click)="editTask(ts)"
+                                            title="{{ ts.data.task }}"
+                                            >{{
+                                                ts.data.task | shortName: 100
+                                            }}</a
+                                        >
+                                    </div>
+                                </dxi-column>
+                                <dxi-column
+                                    dataField="goal"
+                                    [width]="200"
+                                ></dxi-column>
+                                <dxi-column
+                                    dataField="status"
+                                    [width]="100"
+                                ></dxi-column>
+                                <dxi-column
+                                    dataField="duedate"
+                                    [width]="100"
+                                    caption="Due Date"
+                                    dataType="date"
+                                    format="MMM d, yyyy"
+                                    [allowFiltering]="false"
+                                ></dxi-column>
+                                <dxi-column
+                                    dataField="owner"
+                                    [width]="80"
+                                ></dxi-column>
+                                <dxi-column
+                                    dataField="internalDueDate"
+                                    [width]="140"
+                                    [allowFiltering]="false"
+                                    dataType="date"
+                                    format="MMM d, yyyy"
+                                    caption="Internal Due Date"
+                                ></dxi-column>
+                                <dxi-column
+                                    dataField="internalOwnerName"
+                                    [width]="140"
+                                    [allowFiltering]="false"
+                                    caption="Internal Owner Name"
+                                ></dxi-column>
+                                <dxi-column
+                                    dataField="internalStatus"
+                                    [width]="140"
+                                    [allowFiltering]="false"
+                                    caption="Internal Status"
+                                ></dxi-column>
+                            </dx-data-grid>
+                        </div>
+                    </dx-data-grid>
+                </div>
+            </div>
+
+            <div class="row" *ngIf="this.gridType == 'mytask'">
+                <div class="col-12">
+                    <dx-data-grid
+                        #gridContainer2
+                        id="gridContainer2"
+                        [dataSource]="dataSource"
+                        [showColumnLines]="true"
+                        [showRowLines]="true"
+                        [showBorders]="true"
+                        [sorting]="false"
+                        [rowAlternationEnabled]="true"
+                    >
+                        <dxo-remote-operations
+                            [sorting]="false"
+                            [paging]="true"
+                            [filtering]="true"
+                        >
+                        </dxo-remote-operations>
+                        <dxo-paging [pageSize]="15"></dxo-paging>
+                        <dxo-pager
+                            [showPageSizeSelector]="false"
+                            [allowedPageSizes]="[5, 10, 20]"
+                            [showInfo]="true"
+                        >
+                        </dxo-pager>
+                        <dxo-header-filter [visible]="showHeaderFilter">
+                        </dxo-header-filter>
+                        <dxi-column
+                            dataField="task"
+                            cellTemplate="task"
+                            [allowFiltering]="false"
+                        >
+                            <div *dxTemplate="let ts of 'task'">
+                                <a
+                                    class="taskName"
+                                    (click)="editTask(ts)"
+                                    title="{{ ts.data.task }}"
+                                    >{{ ts.data.task | shortName: 40 }}</a
+                                >
+                            </div>
+                        </dxi-column>
+                        <dxi-column dataField="goal">
+                            <dxo-header-filter
+                                [dataSource]="filterData.goal"
+                            ></dxo-header-filter>
+                        </dxi-column>
+                        <dxi-column
+                            dataField="duedate"
+                            dataType="date"
+                            [width]="120"
+                            format="MMM d, yyyy"
+                            [allowFiltering]="false"
+                        ></dxi-column>
+                        <dxi-column
+                            dataField="status"
+                            [width]="150"
+                            [calculateFilterExpression]="
+                                calculateFilterExpressionOAS
+                            "
+                        >
+                            <dxo-header-filter
+                                [dataSource]="filterData.status"
+                            ></dxo-header-filter>
+                        </dxi-column>
+                        <dxi-column
+                            dataField="Advisor"
+                            caption="Advisor"
+                            [calculateFilterExpression]="
+                                calculateFilterExpression
+                            "
+                        >
+                            <dxo-header-filter
+                                [dataSource]="filterData.advisor"
+                            ></dxo-header-filter>
+                        </dxi-column>
+                        <dxi-column
+                            dataField="internalDueDate"
+                            [width]="140"
+                            [allowFiltering]="false"
+                            dataType="date"
+                            format="MMM d, yyyy"
+                            caption="Internal Due Date"
+                        ></dxi-column>
+                        <dxi-column
+                            dataField="internalOwnerName"
+                            [width]="140"
+                            [allowFiltering]="false"
+                            caption="Internal Owner Name"
+                        ></dxi-column>
+                        <dxi-column
+                            dataField="internalStatus"
+                            [width]="140"
+                            [allowFiltering]="false"
+                            caption="Internal Status"
+                        ></dxi-column>
+                    </dx-data-grid>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

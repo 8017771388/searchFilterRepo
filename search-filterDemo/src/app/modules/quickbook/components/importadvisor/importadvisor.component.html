@@ -1,0 +1,65 @@
+<div class="col-md-12 col-centered">
+    <h2>Advisor Import Into LPL Quickbook Account </h2>
+    <div class="form-horizontal">
+        <div class="form-group">
+            <div class="row pt-3">
+             
+            <div class="col-lg-2 padding-0 font-weight-bold"  style="padding-left:14px;">
+                <label >Select Advisor A/C :</label>
+            </div>
+            <div *ngIf="advisorimportresponse" class="col-sm-4  padding-0">
+              <select  class = "form-control" (change)="onAdvisorImporExportEntityDetailsChange($event.target.value)" [(ngModel)]="selectedvalue">
+                <option value="">Select Advisor</option>
+                <option *ngFor="let advimpres of advisorimportresponse.listAdvisorImporExportEntityDetails" value="{{advimpres.advisorEmail}}_{{advimpres.lplAdvisorRelmID}}">{{advimpres.advisorEmail}}</option>
+                
+              </select>
+  
+            </div>
+  
+            <div class="col-sm-4 font-weight-bold" id="lplQBO"  *ngIf="advisorImpexptentitydetails" >
+              
+                <span id="lplQBOVal" *ngIf="advisorImpexptentitydetails.advisorLPLQBOEmail" name="lplQBOVal">Mapped LPL QBO A/C : {{advisorImpexptentitydetails.advisorLPLQBOEmail}}</span>
+              
+  
+  
+            </div>
+            </div>
+        </div>
+  
+        <div class="row mt-3" *ngIf="advisorImpexptentitydetails">
+            <div class="alert alert-danger col-md-8" *ngIf="!advisorImpexptentitydetails.advisorLPLQBOEmail">
+                Advisor {{advisorImpexptentitydetails.advisorEmail}} is not mapped for Import
+            </div>
+          
+          </div>
+        <div class="row mt-3" *ngIf="advisorImpexptentitydetails">
+            <div class="col-sm-8 form-group">
+                <h4> Exported Entities Count For : {{advisorImpexptentitydetails.advisorEmail}}</h4>
+                <ul class="list-group pt-2">
+                    <li [className]="advisorImpexptentitydetails.employeeCount ? 'list-group-item d-flex justify-content-between align-items-center' : 'list-group-item list-group-item-danger'">Employee Count :
+                       <span class="badge badge-primary badge-pill">{{advisorImpexptentitydetails.employeeCount}}</span></li>
+                    <li [className]="advisorImpexptentitydetails.vendorCount ? 'list-group-item d-flex justify-content-between align-items-center' : 'list-group-item list-group-item-danger'">Vendor Count : 
+                       <span class="badge badge-primary badge-pill">{{advisorImpexptentitydetails.vendorCount}}</span></li>
+                    <li [className]="advisorImpexptentitydetails.customerCount ? 'list-group-item d-flex justify-content-between align-items-center' : 'list-group-item list-group-item-danger'">Customer Count :  
+                      <span class="badge badge-primary badge-pill">{{advisorImpexptentitydetails.customerCount}}</span> </li>
+                      <li [className]="advisorImpexptentitydetails.chartOfAccountsCount ? 'list-group-item d-flex justify-content-between align-items-center' : 'list-group-item list-group-item-danger'">ChartOfAccount Count :  
+                          <span class="badge badge-primary badge-pill">{{advisorImpexptentitydetails.chartOfAccountsCount}}</span> </li>
+                          <li [className]="advisorImpexptentitydetails.journalEntryCount ? 'list-group-item d-flex justify-content-between align-items-center' : 'list-group-item list-group-item-danger'">JournalEntry Count :  
+                            <span class="badge badge-primary badge-pill">{{advisorImpexptentitydetails.journalEntryCount}}</span> </li> 
+                    </ul>
+              </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 form-group">
+                <div><input type="button" id="subBtn" name="submitButton" value="{{importbuttonname}}" class="btn btn-success" [disabled]="!dsiableimportbutton" 
+                  (click)="importAdvisorClick()" title="Chose a value from Dropdown" /></div>
+                
+            </div>
+        </div>
+  
+      
+  
+  
+    </div>
+  </div>
+  

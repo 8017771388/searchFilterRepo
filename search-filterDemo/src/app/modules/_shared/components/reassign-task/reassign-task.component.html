@@ -1,0 +1,69 @@
+<div class="modal-wrapper" >
+        <div class="modal-header goal-header">
+            <h1>{{title}}</h1>
+            <button (click)="bsModalRef.hide()" class="cross-btn">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body goal-body">
+            <div class="row">
+                <div class="col-12">
+                    <label>Task Name</label>
+                    <input type="text" [(ngModel)]="taskDetails.task" (ngModelChange)="checkDuplicateTask($event)" class="form-control custom-field" [disabled]="userType === analyst"/>
+                    <span class="error-text" *ngIf="taskExist">
+                        <span> Task already exists</span>
+                    </span>
+                </div>
+            </div>
+            
+            <div class="row margin-top5">
+                <div class="col-6">
+                    <label>CFO</label>
+                    <select class="form-control custom-field" [(ngModel)]="selectedCfo" (ngModelChange)="cfoSelected($event, selectedCfo)">
+                        <option value="" disabled>Select CFO</option>
+                        <option *ngFor="let cfos of allVCFOs" [ngValue]="cfos.username">
+                                {{cfos.fullname}}
+                        </option>                        
+                    </select>
+                </div>
+                <div class="col-6">                    
+                    <label>Analysts</label>     
+                    <select class="form-control custom-field" [(ngModel)]="selectedAnalyst" (ngModelChange)="analystSelected($event)">
+                        <option value="" >Select Analyst</option>
+                        <option *ngFor="let analyst of allAnalysts" [ngValue]="analyst.username">
+                                {{analyst.fullname}}
+                        </option>                        
+                    </select>
+                </div>
+            </div>
+            <div class="row margin-top5">                
+                <div class="col-6">                    
+                    <label>Due Date</label>     
+                    <div class="input-group custom-input-group">
+                        <input type="text" [disabled]="userType === analyst" class="form-control custom-field" [bsValue]="taskDetails.dueDate" #dueDate="bsDatepicker" bsDatepicker [bsConfig]="{ dateInputFormat: 'MMM D, YYYY' }" [(ngModel)]="taskDetails.dueDate" (bsValueChange)="onDateChange($event)"> 
+                        <span class="input-group-btn">
+                            <button type="button" [disabled]="userType === analyst" class="btn btn-default calender-custom" (click)="dueDate.toggle()" ng-click="isDatepickerOpen = !isDatepickerOpen">
+                                <i class="fa fa-calendar"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-6">                    
+                    <label>Internal Due Date</label>     
+                    <div class="input-group custom-input-group">
+                        <input type="text" class="form-control custom-field" [bsValue]="taskDetails.internalDueDate" #dueDate="bsDatepicker" bsDatepicker [bsConfig]="{ dateInputFormat: 'MMM D, YYYY' }" [maxDate]="maxDate" [(ngModel)]="taskDetails.internalDueDate"> 
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default calender-custom" (click)="dueDate.toggle()" ng-click="isDatepickerOpen = !isDatepickerOpen">
+                                <i class="fa fa-calendar"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        <div class="modal-footer custom-footer">
+                <input type="button" class="btn cancel-btn" value="Cancel" name="Cancel" (click)="bsModalRef.hide()">
+                <input type="button" class="btn custom-primary" value="Reassign" name="Reassign" [disabled]="(taskExist || taskDetails.task === '') || clickOnce === true" (click)="reassignTask()">
+        </div>
+</div>

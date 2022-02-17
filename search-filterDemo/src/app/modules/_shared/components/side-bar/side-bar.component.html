@@ -1,0 +1,17 @@
+<!-- Sidebar  -->
+<nav class="sidebar" [ngClass]="status ? 'active' : ''">
+    <div class="toggle-button">
+            <button type="button" id="sidebarCollapse" class="custom-button" (click)="clickEvent()">
+                <span>Hide Quick Views</span>
+            </button>
+    </div>
+    <div class="sidebar-header">
+        <h3>Quick Views</h3>
+    </div>
+   
+    <ul class="side-bar-list">
+        <li (click) ="gridData('mytask')" [ngClass]="{'white':alladvisor=='mytask'}">My Tasks</li>
+        <li (click) ="gridData('myadvisor')"  [ngClass]="{'white':alladvisor=='myadvisor'}">My Advisors</li>
+        <li (click) ="gridData('alladvisor')"  [ngClass]="{'white':alladvisor=='alladvisor'}" >All Advisors</li>
+    </ul>
+</nav>

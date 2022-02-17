@@ -1,0 +1,72 @@
+<div class="master-container">
+    <div class="row">
+        <div class="col-4 offset-8">
+            <div class="search-container">
+                <button class="search-btn-submit">
+                    <i class="fa fa-search"></i>
+                </button>
+                <input class="form-control" id="myInput" type="text" placeholder="Search.." [(ngModel)]="searchTxt">
+            </div>
+                
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 sub-heading">
+            <h2>Category</h2>
+        </div>
+    </div>
+    <div class="collaps-container">
+        <div *ngFor="let category of categoryList.data | filter : searchTxt : 'category'; let i = index">
+            <div class="row custom-row" [ngClass]="{'active': category.isCollapsed}">
+                <div class="col-12">
+                    <span class="add-collaps-button" (click)="category.isCollapsed = !category.isCollapsed" >{{category.category}}</span>
+                </div>
+                
+            </div>
+            <div class="row" [ngClass]="{'bottom-border-space': category.isCollapsed}">
+                <div class="col-12 expand-container" id="collapseBasic" [collapse]="!category.isCollapsed">
+                    <div class="row">
+                        <div class="col-12">
+                            <label>Category Description:</label>
+                            <input type="text" class="form-control" [(ngModel)]="coppiedCategory[i].category" (ngModelChange)="checkDuplicateCategory($event, i)">
+                            <span class="err-msg" *ngIf="errMsg || coppiedCategory[i].category == ''">{{ coppiedCategory[i].category == '' ? 'Category description is required.' : errMsg}}</span>
+                        </div>
+                    </div>
+                    <div class="row margin-top15">
+                        <div class="col-12">
+                            <label>Purpose:</label>
+                            <input type="text" class="form-control" [(ngModel)]="coppiedCategory[i].purpose">
+                        </div>
+                    </div>
+                    <div class="row margin-top15">
+                        <div class="col-12 text-right">
+                            <input class="btn cancel-btn" name="Cancel" type="button" value="Cancel" (click)="category.isCollapsed = !category.isCollapsed">
+                            <input class="btn custom-primary margin-left5" name="Save" type="button" value="Update" (click)="updateCategory(coppiedCategory[i])"   [disabled]="!coppiedCategory[i].category || errMsg">
+                            <input class="btn cancel-btn margin-left5" name="Delete" type="button" value="Delete" (click)="deleteCategory(category)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="row custom-row">
+            <div class="col-12">
+                <span (click)="category.isCollapsed = !category.isCollapsed" >ABC123</span>
+            </div>
+            
+        </div>
+        <div class="row custom-row">
+            <div class="col-12">
+                <span (click)="category.isCollapsed = !category.isCollapsed" >ABC123</span>
+            </div>
+            
+        </div> -->
+    </div>
+    <div class="row container-footer">
+        <div class="col-12">
+            <button (click)="addCategory()">
+                <i class="fa fa-plus-circle"></i>
+                <span>Add New Category</span>
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,94 @@
+<div class="modal-wrapper">
+        <div class="modal-header goal-header">
+            <h1>{{title}}</h1>
+            <button (click)="bsModalRef.hide()" class="cross-btn">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body goal-body">
+            <div *ngIf="openFrom != 'build-core-plan'">
+                <div class="row">
+                    <div class="col-12">
+                        <label>Category</label>
+                        <select class="form-control custom-field" [(ngModel)]="selectedCategory" (ngModelChange)="renderGoals($event)">
+                            <option value="" disabled>Select Category</option>
+                            <option *ngFor="let category of masterLibrary" [ngValue]="category" >
+                                    {{category.category | shortName:50}}
+                            </option>                        
+                        </select>
+                    </div>
+                </div>
+                <div class="row margin-top5">
+                        <div class="col-2">
+                            <input class="form-check-input custom-radio" type="radio" name="master" [(ngModel)]="goalType" value="Master"
+                            (change)="selectedGoal='';customGoal=''">
+                            <label for="master" class="padding-left18">
+                                Master Library
+                            </label>
+                        </div>
+                        <div class="col-3">
+                                <input class="form-check-input custom-radio" type="radio" name="master" [(ngModel)]="goalType" value="Custom"
+                                (change)="selectedGoal='';customGoal=''">
+                                <label for="master" class="padding-left18">
+                                    Custom Goal
+                                </label>
+                        </div>
+                </div>
+                <div class="row margin-top5">
+                        <div class="col-12">
+                            <label>Goal</label>
+                            <select class="form-control custom-field" [hidden]="goalType == 'Custom'" [(ngModel)]="selectedGoal" (ngModelChange)="getSelectedGoal($event)">
+                               <option value="" disabled>Select Goal</option>
+                                <option *ngFor="let goal of categoryGoals.goals" [ngValue]="goal" title="{{goal.goal}}">
+                                        {{goal.goal | shortName: 120}}
+                                </option> 
+                            </select>
+                        </div>
+                        <div class="col-12" [hidden]="goalType == 'Master'">
+                            <input placeholder="Enter Custom Goal" type="text" [(ngModel)]="customGoal" (ngModelChange)="getCustomGoal($event)" class="form-control custom-field" maxlength="300" />
+                        </div>
+                        <div class="col-12" style="color:red" [hidden]="!goalExist">
+                            <span >
+                                Selected Goal/Category already exists in the plan.
+                            </span>
+                        </div>
+                </div>
+                <div class="row margin-top5">
+                    <div class="col-6">
+                        <label>Goal Completion Quarter</label>
+                        <select class="form-control custom-field" [(ngModel)]="selectedQuarter" (ngModelChange)="getQuarter($event)">
+                            <option value="" disabled>Select Quarter</option>
+                             <option *ngFor="let quarter of quarters; let i = index" [ngValue]="quarter" title="{{quarter}}" >
+                                     {{quarter}}
+                             </option> 
+                         </select>
+                         <span class="error-text" *ngIf="noQuarterSelected">Please select goal completion quarter</span>                 
+                    </div>
+                    <div class="col-6" >
+                        <label>Completion Year</label> 
+                        <select class="form-control custom-field" [(ngModel)]="quarterYear" (ngModelChange)="getYear($event)">
+                            <option value="" disabled>Select Year</option>
+                             <option *ngFor="let year of completionYear" [ngValue]="year" title="{{year}}">
+                                     {{year}}
+                             </option> 
+                         </select>  
+                         <span class="error-text" *ngIf="noYearSelected">Please select goal completion year</span>                 
+                    </div>
+                    
+            </div>
+            </div>
+            <div *ngIf="openFrom == 'build-core-plan'">
+                    <div class="row">
+                        <div class="col-12">
+                            <textarea  class="form-control custom-field" placeholder="Custom Goal Name" name="goalName" style="resize: none" [(ngModel)]="goalName"></textarea>
+                            <p class="margin-top15"> *Note: Custom goals are local to advisor portfolios and will not be added to the Master Library</p>
+                        </div>                        
+                    </div>
+            </div>
+        </div>
+        <div class="modal-footer custom-footer">
+                <input type="button" class="btn cancel-btn" value="Cancel" name="Cancel" (click)="bsModalRef.hide()">
+                <input *ngIf="openFrom != 'build-core-plan'" type="button" class="btn custom-primary" value="Save" name="Save" (click)="saveGoal()" [disabled]="(selectedCategory ==='' || (customGoal ==='' && selectedGoal==='')) || goalExist || noQuarterSelected || noYearSelected">
+                <input *ngIf="openFrom == 'build-core-plan'" type="button" class="btn custom-primary" value="Add" name="Add" (click)="addGoal()"  [disabled]="!goalName ">
+        </div>
+</div>

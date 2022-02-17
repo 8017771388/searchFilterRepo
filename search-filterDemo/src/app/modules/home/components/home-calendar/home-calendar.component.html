@@ -1,0 +1,94 @@
+<div class="calendar clearfix" *ngIf="showCalenderView">
+    <div class="header">
+        <div class="date-section clearfix">
+            <span>{{monthTxt}}, {{yearTxt}}</span>
+            <!-- <button class="outlook-sync"><img src="assets/img/Sync.svg"class="float-left">Sync with outlook</button> -->
+        </div>
+        <div class="btn-group" dropdown>
+            <button id="button-animated" dropdownToggle type="button" class="btn dropdown-toggle"
+                    aria-controls="dropdown-animated">
+                {{monthTxt}} <i class="fa fa-angle-down"></i>
+            </button>
+            <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu"
+                role="menu" aria-labelledby="button-animated">
+                <li role="menuitem"  [ngClass]="[ month.name == monthTxt ? 'active-dropdown-item' : '']" *ngFor="let month of dropDownMonths" (click)="selectMonth(month)">{{month.name}}</li>
+            </ul>
+        </div>
+        <div class="btn-group margin-left5" dropdown>
+            <button id="button-animated" dropdownToggle type="button" class="btn dropdown-toggle"
+                    aria-controls="dropdown-animated">
+                {{yearTxt}} <i class="fa fa-angle-down"></i>
+            </button>
+            <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu"
+                role="menu" aria-labelledby="button-animated">
+                <li role="menuitem" [ngClass]="[ year == yearTxt ? 'active-dropdown-item' : '']" *ngFor="let year of dropDownYears" (click)="selectYear(year)">{{year}}</li>
+            </ul>
+        </div>
+        
+        <ul class="float-right right-nav">
+            <li>
+                <span (click)="filterCalender('all')" class="" [ngClass]="[activeFilter == 'all' ? 'grey-active' : 'grey-border']">All Tasks</span>
+            </li>
+            <li>
+                <span class="" [ngClass]="[activeFilter == 'mytask' ? 'green-active' : 'green-border']" (click)="filterCalender('mytask')"><img src="assets/img/owner.svg" class="img-width calendar-task-images"> My Tasks</span> 
+            </li>
+            <li>
+                <span class="" [ngClass]="[activeFilter == 'advisortask' ? 'yellow-active' : 'yellow-border']" (click)="filterCalender('advisortask')"><img src="assets/img/vCFOuser_Icon.svg" class="img-width calendar-task-images"> Advisor Tasks</span>
+            </li>
+            <!-- <li>
+                <button class="outlook-sync"><img src="assets/img/Sync.svg"class="float-left">Sync with outlook</button>
+            </li> -->
+        </ul>
+
+     </div>
+      <div class="week names">
+        <span class="day weekend-bg">Sun</span>
+        <span class="day">Mon</span>
+        <span class="day">Tue</span>
+        <span class="day">Wed</span>
+        <span class="day">Thu</span>
+        <span class="day">Fri</span>
+        <span class="day weekend-bg">Sat</span>
+      </div>
+      <div class="week" *ngFor="let week of weeks">
+        <div class="day" [ngClass]="{'today': day.isToday, 'prev-month-day' : !day.isCurrentMonth}" *ngFor="let day of week.days">
+            <span class="task-block" *ngIf="day.isCurrentMonth && day.vcfoTaskList.length > 0" (click)="showTooltip(day, 'vcfoTaskList')">
+                <!-- <i class="fa fa-user"></i> -->
+                <img class="calendar-task-images" src="assets/img/owner.svg">
+                My Tasks
+                <span class="round-block">
+                    {{day.vcfoTaskList.length}}
+                </span>
+            </span>
+            <span class="task-block advisor-bg" [ngClass]="[day.vcfoTaskList.length > 0 ? '' : 'margin-top-18']" *ngIf="day.isCurrentMonth && day.advisorTaskList.length > 0" (click)="showTooltip(day, 'advisorTaskList')">
+                    <!-- <i class="fa fa-user"></i> -->
+                    
+                    <img class="calendar-task-images" src="assets/img/vCFOuser_Icon.svg">
+                    Advisor Tasks
+                    <span class="round-block">
+                        {{day.advisorTaskList.length}}
+                    </span>
+            </span>
+            <div class="calender-tooltip "  [ngClass]="[day.isSaturday ? 'left-pos' : 'right-pos' , day.tooltipTitle == 'My Tasks' ? 'green' : (day.tooltipTitle == 'All Tasks' ? 'grey' : 'yellow'), (day.vcfoTaskList.length == 0 && day.tooltipTitle != 'All Tasks') ? 'top-12' : '']"  *ngIf="day.showTooltip && day.tooltipData">
+                <div class="tooltip-header" [ngClass]="[day.tooltipTitle == 'My Tasks' ? 'mytask-header-green' : (day.tooltipTitle == 'All Tasks' ? 'mytask-header-grey' : 'mytask-header-yellow')]">{{day.tooltipTitle}}
+                    <button class="float-right crossBtn" (click)="day.showTooltip = false" [ngClass]="[day.tooltipTitle == 'All Tasks' ? 'cross-white' : '']">X</button>
+                </div>
+                <div class="tooltip-area">
+                    <div class="row tooltip-row"  [ngClass]="[task.advisorTask && day.tooltipTitle == 'All Tasks' ? 'left-yellow-brd' : '', task.cfoTask && day.tooltipTitle == 'All Tasks' ? 'left-green-brd' : '']" *ngFor="let task of day.tooltipData; let i = index">
+                        <div class="col-9 text-left" title="{{task.task}}">{{task.task | shortName:40}}</div>
+                        <!-- <div class="col-1"><img src="assets/img/sync_01.png"></div> -->
+                        <div class="col-1"><button class="custom-btn" (click)="editTask(task, i, day)"><img src="assets/img/Edit.png"></button></div>
+                        <div class="col-1"><button class="custom-btn" [disabled]="userType === analyst" (click)="deleteTask(task, i, day)"><img src="assets/img/Delete.png"></button></div>
+                    </div>
+                </div>
+            </div>
+            <span class="task-view" *ngIf="day.isCurrentMonth" [ngClass]="[day.advisorTaskList.length > 0 || day.vcfoTaskList.length > 0 ? '' : 'no-task-view']">
+                <span (click)="showTooltip(day, 'all')" *ngIf="day.advisorTaskList.length > 0 || day.vcfoTaskList.length > 0">View All</span>
+                <span (click)="addTask(day)">+ Add Task</span>
+            </span>
+            <span class="date-style" [ngClass]="{'weekend-text-color': day.isWeekend && day.isCurrentMonth}">{{day.number}}</span>
+        </div>
+      </div>
+</div>
+
+<!-- ng-class="{ today: day.isToday, 'different-month': !day.isCurrentMonth, selected: day.date.isSame(selected) }" -->

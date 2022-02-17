@@ -1,0 +1,24 @@
+<div class="modal-wrapper" >
+        <div class="modal-header goal-header">
+            <h1>{{title}}</h1>
+            <button (click)="bsModalRef.hide()" class="cross-btn">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body goal-body">
+            <div class="row">
+                <div class="col-12">
+                    <p *ngIf="title === 'Delete Goal'">Are you sure you want to delete the goal? All the tasks under this goal will be deleted.
+                    </p>
+                    <p *ngIf="title === 'Delete Task'">Are you sure you want to delete the task?
+                    </p>
+                </div>
+            </div>          
+            
+        </div>
+        <div class="modal-footer custom-footer">
+                <input *ngIf="title === 'Delete Goal'" type="button" class="btn custom-primary" value="Confirm" name="Confirm" (click)="deleteGoal()">
+                <input *ngIf="title === 'Delete Task'" type="button" class="btn custom-primary" value="Confirm" name="Confirm" (click)="deleteTask()">
+                <input type="button" class="btn cancel-btn" value="Cancel" name="Cancel" (click)="bsModalRef.hide()">                
+        </div>
+</div>

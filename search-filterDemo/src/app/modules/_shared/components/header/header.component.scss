@@ -1,0 +1,40 @@
+.navbar{
+    .navbar-brand {
+        font-size: 16px;
+        font-family: 'roboto_slab', sans-serif;
+    }
+    &.custom-navbar {
+        margin-top: 50px;
+        padding-bottom: 0;
+        box-shadow: -2px 1px 5px 0 rgba(0, 0, 0, 0.1);
+        -webkit-box-shadow:-2px 1px 5px 0 rgba(0, 0, 0, 0.1);
+        .nav-item{
+            padding: 0 15px 0 0;
+            &.active{
+                .nav-link {
+                     background: transparent;
+                     border-bottom: 3px solid #0076c8;
+                     font-family: "Roboto Regular", Helvetica, Arial, sans-serif;
+                }
+             }
+        }
+        .nav-link   {
+            border-bottom: 3px solid transparent;
+            color: #444;
+            font-size: 16px;
+            padding: 19px 0 11px 0;
+            line-height: 17px;
+            font-family: "Roboto Regular", Helvetica, Arial, sans-serif;
+        }
+        
+    }
+    .user-info{
+        font-size: 13px;
+        font-family: 'roboto_slab', sans-serif;
+        color: #fff;
+    }
+    .avatar{
+        width: 30px;
+        height: 30px;
+    }
+}

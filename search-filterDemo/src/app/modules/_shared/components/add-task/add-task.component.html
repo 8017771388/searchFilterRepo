@@ -1,0 +1,142 @@
+<div class="modal-wrapper" >
+    <div class="modal-header goal-header">
+        <h1>{{title}}</h1>
+        <button (click)="bsModalRef.hide()" class="cross-btn">
+            <i class="fa fa-times"></i>
+        </button>
+    </div>
+    <div class="modal-body goal-body">
+        <div class="row margin-top5" *ngIf="masterLibraryTask !== null && !isNewGoal && !isEdit">
+                <div class="col-2">
+                    <input class="form-check-input custom-radio" type="radio" name="master" [(ngModel)]="goalType" value="Master"
+                    (change)="tasks.taskName=''">
+                    <label for="master" class="padding-left18">
+                        Master Library
+                    </label>
+                </div>
+                <div class="col-10">
+                        <input class="form-check-input custom-radio" type="radio" name="master" [(ngModel)]="goalType" value="Custom"
+                        (change)="tasks.taskName=''">
+                        <label for="master" class="padding-left18">
+                            Custom Task
+                        </label>
+                </div>
+        </div>
+        <div class="row  margin-top5">
+            <div class="col-12">
+                <label>Task Name</label>
+                <input placeholder="Task Name" type="text" [disabled]="(userType === analyst && isEdit)" [(ngModel)]="tasks.taskName" (ngModelChange)="checkDuplicateTask($event)" class="form-control custom-field" *ngIf="goalType === 'Custom' || masterLibraryTask === null || isNewGoal || isEdit" maxlength="300"/>
+                <!-- <select class="form-control" [(ngModel)]="tasks.taskName" (ngModelChange)="taskArray($event)" *ngIf="goalType === 'Master' && masterLibraryTask !== null">
+                        <option *ngFor="let task of masterLibrary" [ngValue]="task" >
+                                {{task.task}}
+                        </option>                        
+                </select> -->
+                <ng-select #selectTask *ngIf="goalType === 'Master' && masterLibraryTask !== null && !isNewGoal && !isEdit"
+                    [items]="masterLibrary"
+                    [multiple]="true"
+                    [closeOnSelect]="false"
+                    [searchable]="false"
+                    bindLabel="task"
+                    bindValue ="task"
+                    placeholder="Select Task"
+                    [(ngModel)]="tasks.taskName"
+                    (change)="taskSelected($event)">
+                    <ng-template ng-option-tmp let-item="item" let-index="index">                           
+                        <b>{{item.task | shortName:100}}</b>
+                    </ng-template>
+                </ng-select>
+                <span class="error-text" *ngIf="allTaskExist && goalType !== 'Custom'">
+                    <span>All the tasks have already been added</span>
+                </span>
+                <span class="error-text" *ngIf="taskExist && goalType !== 'Master'">
+                    <span> Task already exists</span>
+                </span>
+                <span class="error-text" *ngIf="taskExist && isEdit">
+                    <span>Task name is duplicate.</span>
+                </span>
+            </div>
+        </div>
+        <div class="row margin-top5">
+            <div class="col-6">
+                <label>Assigned To</label>                
+                <select class="form-control custom-field" [(ngModel)]="tasks.assignedTo" [disabled]="userType === analyst">                   
+                    <option value="Advisor" [selected]="true" [disabled]="userType === analyst">Advisor</option>
+                    <option value="VCFO" *ngIf="openFrom === 'core-plan'" [disabled]="advisorDetail.vcfoUsername === null">CFO</option>   
+                    <option value="VCFO" *ngIf="openFrom === 'build-core-plan'" [disabled]="cfoUserName === null || cfoUserName.toLowerCase() == 'cfo'">CFO</option>                     
+                    <option value="VCFO" *ngIf="openFrom === 'home-page'" >CFO</option>
+                </select>
+            </div>
+            <div class="col-6" *ngIf="isEdit">
+                <label>Time Spent(HH:MM)</label>
+                <input placeholder="HH:MM" type="text" [(ngModel)]="tasks.timeSpent" class="form-control custom-field without" (ngModelChange)="formatTime($event)" maxlength="5" (keydown)="checkValue($event)"/>
+            </div>
+            <div class="col-6" *ngIf="!isEdit">
+                <label>Due Date</label>     
+                <div class="input-group custom-input-group">
+                    <input type="text" class="form-control custom-field" [(ngModel)]="editDate"  #dueDate="bsDatepicker" bsDatepicker [bsConfig]="{ dateInputFormat: 'MMM D, YYYY' }" (bsValueChange)="onValueChange($event, 'duedate')"> 
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default calender-custom" (click)="dueDate.toggle()" ng-click="isDatepickerOpen = !isDatepickerOpen">
+                            <i class="fa fa-calendar"></i>
+                        </button>
+                    </span>
+                </div>      
+                
+            </div>
+        </div>
+        <div class="row margin-top5">
+            <div class="col-12" *ngIf="!isEdit">
+                <label>Time Spent(HH:MM)</label>
+                <input placeholder="HH:MM" type="text" [(ngModel)]="tasks.timeSpent" class="form-control custom-field without" (ngModelChange)="formatTime($event)" maxlength="5" (keydown)="checkValue($event)"/>
+            </div>
+            <div class="col-6" *ngIf="isEdit">
+                <label>Due Date</label>     
+                <div class="input-group custom-input-group">
+                    <input type="text" [disabled]="userType === analyst" class="form-control custom-field" [(ngModel)]="editDate"  #dueDate="bsDatepicker" bsDatepicker [bsConfig]="{ dateInputFormat: 'MMM D, YYYY' }" (bsValueChange)="onValueChange($event, 'duedate')"> 
+                    <span class="input-group-btn">
+                        <button type="button" [disabled]="userType === analyst" class="btn btn-default calender-custom" (click)="dueDate.toggle()" ng-click="isDatepickerOpen = !isDatepickerOpen">
+                            <i class="fa fa-calendar"></i>
+                        </button>
+                    </span>
+                </div>      
+                
+            </div>
+            <div class="col-6" *ngIf="isEdit">
+                <label>Internal Due Date</label>     
+                <div class="input-group custom-input-group">
+                    <input type="text" class="form-control custom-field" [(ngModel)]="editInternalDate"  #internalDueDate="bsDatepicker" bsDatepicker [bsConfig]="{ dateInputFormat: 'MMM D, YYYY' }" [maxDate]="maxDate" (bsValueChange)="onValueChange($event, 'inetrnalDuedate')"> 
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default calender-custom" (click)="internalDueDate.toggle()" ng-click="isDatepickerOpen = !isDatepickerOpen">
+                            <i class="fa fa-calendar"></i>
+                        </button>
+                    </span>
+                </div>      
+                
+            </div>
+         </div>
+         <div class="row margin-top5" *ngIf="isEdit">
+            <div class="col-6">
+                <label>Internal Status</label>     
+                <select class="form-control custom-field" [(ngModel)]="tasks.selectedInternalStatus">
+                    <option value="" disabled>Select Status</option>
+                    <option *ngFor="let status of allInternalStatus" [ngValue]="status.code">
+                            {{status.description}}
+                    </option>                        
+                </select>
+            </div>
+         </div>
+        <div class="row margin-top5">
+            <div class="col-12">
+                <label>Notes</label>
+                <textarea class="form-control custom-field textarea-resize" rows="5" id="comment" [(ngModel)]="tasks.notes"></textarea>
+            </div>               
+        </div>
+    </div>
+    <div class="modal-footer custom-footer">
+            <input type="button" class="btn cancel-btn" value="Cancel" name="Cancel" (click)="bsModalRef.hide()">
+            <input type="button" class="btn custom-primary" value="Save" name="Save" (click)="clickOnce=true;saveTask()" [disabled]="(tasks.taskName === '' || taskExist) || clickOnce===true" *ngIf="openFrom == 'core-plan' && !isEdit">
+            <input type="button" class="btn custom-primary" value="Save" name="Save" (click)="editTask()" [disabled]="tasks.taskName === '' || taskExist" *ngIf="openFrom == 'core-plan' && isEdit">
+            <input type="button" class="btn custom-primary" value="Save" name="Save" (click)="editHomeTask()" [disabled]="tasks.taskName === '' || taskExist" *ngIf="openFrom == 'home-page' && isEdit">
+            <input type="button" class="btn custom-primary" value="Add" name="Add" (click)="addTask()" [disabled]="tasks.taskName === '' || taskExist" *ngIf="openFrom == 'build-core-plan' && !isEdit">
+            <input type="button" class="btn custom-primary" value="Edit" name="Edit" (click)="addTask()" [disabled]="tasks.taskName === '' || taskExist" *ngIf="openFrom == 'build-core-plan' && isEdit">
+    </div>
+</div>

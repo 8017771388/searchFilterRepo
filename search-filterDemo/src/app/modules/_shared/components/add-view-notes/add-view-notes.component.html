@@ -1,0 +1,62 @@
+<div class="modal-wrapper" >
+        <div class="modal-header goal-header">
+            <h1>{{title}}</h1>
+            <button (click)="bsModalRef.hide()" class="cross-btn">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body goal-body">
+            <div class="row">
+                <div class="col-12">
+                    <h3>Goal</h3>
+                    <span class="cfo-sub-headingText">
+                        <i class="fa fa-square" [ngClass]="goalConstant[goalDetail.goalStatus]"></i> <!-- blue, darkBlueGrey -->
+                        {{goalDetail.goalStatus}}
+                    </span>
+                    <p>{{goalDetail.goal}}</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <h3>Task</h3>
+                    <span class="cfo-sub-headingText">
+                        <i class="fa fa-circle" [ngClass]="taskConstant[taskDetail.status]"></i>
+                        {{taskDetail.status!='Not Started'?taskDetail.status:'TBD'}}
+                    </span>
+                    <p>{{taskDetail.task}}</p>
+                </div>
+            </div>
+            <div class="row margin-top5">
+                    <div class="col-12">
+                        <h3>Notes</h3>
+                        <div *ngIf="allNotes?.length > 0">                           
+                            <div class="" *ngFor="let notes of allNotes">
+                                <i class="fa fa-sticky-note"></i>
+                                <strong class="label-strong">{{notes.createdBy}}</strong>
+                                <span class="font-style-italic">{{notes.createdOn | date}}</span>
+                                <p>{{notes.note}}</p>
+                            </div>
+                        </div>
+                        <div class="notsContainer" *ngIf="allNotes?.length == 0">
+                            <strong>No Note Found</strong>
+                        </div>
+                        
+                    </div>
+                </div>
+            
+        </div>
+        <div class="modal-footer">
+                <input type="text" value="Make a notes" class="form-control float-left custom-field" [(ngModel)]="noteTxt" maxlength="500" [ngClass]="{'error-textBox': noteRequired === true}" />
+                <span *ngIf="noteRequired === true" class="error-text">
+                    <span class="error-text" >Field cannot be blank</span>
+                </span>
+                <input type="button" class="btn cancel-btn" value="Cancel" name="Cancel" (click)="bsModalRef.hide()"/>
+                <input type="button" class="btn custom-primary" value="Save" name="Save" (click)="saveNote()" /> 
+                    <i class="fa fa-spinner" *ngIf="showSpinner"></i>
+            
+            
+               
+                <!-- <input type="button" class="btn cancel-btn" value="Cancel" name="Cancel" (click)="bsModalRef.hide()">
+                <input type="button" class="btn custom-primary" value="Save" name="Save" (click)="saveGoal()" [disabled]="selectedCategory ==='' || (customGoal ==='' && selectedGoal==='')"> -->
+        </div>
+</div>

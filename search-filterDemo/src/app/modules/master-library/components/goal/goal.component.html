@@ -1,0 +1,81 @@
+<div class="master-container">
+        <div class="row">
+            <div class="col-4">
+                    <label>Category</label>
+                    <select class="form-control custom-field" [(ngModel)]="selectedCategory" (ngModelChange)="getGoals($event, null)">
+                        <option value="">Select Category</option>
+                        <option *ngFor="let category of categoryList.data" [ngValue]="category" >
+                                {{category.category | shortName:50}}
+                        </option>                        
+                    </select>
+            </div>
+            <div class="col-4 offset-4">
+                <div class="search-container margin-top25">
+                    <button class="search-btn-submit" (click)="getGoals($event, searchGoal)">
+                        <i class="fa fa-search"></i>
+                    </button>
+                    <input class="form-control" id="myInput" type="text" placeholder="Search.." [(ngModel)]="searchGoal" (keypress)="searchWithTxt($event)">
+                </div>
+                    
+            </div>
+        </div>
+        <div class="row sub-heading">
+            <div class="col-6">
+                <h2>{{goalList.data.length > 0 ? 'Goals' : (selectedCategory || goalSearched ? 'No Goals Existing' : 'Select the category first and/or goals.')}}</h2>
+            </div>
+            <div class="col-6" *ngIf="goalList.data.length > 0">
+                <h2>Categories</h2>
+            </div>
+        </div>
+        <!-- <div class="collaps-container border-bottom-space" *ngIf="goalList.data.length > 0">
+            <div class="row">
+                <div class="col-6"><strong>Goals</strong></div>
+                <div class="col-6 padding-left25"><strong>Categories</strong></div>
+            </div>
+        </div> -->
+        <div class="collaps-container" *ngFor="let goal of goalList.data; let i = index">
+            <div class="row custom-row" [ngClass]="{'active': goal.isCollapsed}">
+                <div class="col-6">
+                    <span class="add-collaps-button" (click)="goal.isCollapsed = !goal.isCollapsed" title="{{goal.goal}}">{{goal.goal| shortName:120}}</span>
+                   
+
+                </div>
+                <div class="col-6">
+                    <span title="{{goal.category}}">{{goal.category | shortName:50}}</span>
+                </div>
+                
+            </div>
+            <div class="row" [ngClass]="{'bottom-border-space': goal.isCollapsed}">
+                <div class="col-12 expand-container" id="collapseBasic" [collapse]="!goal.isCollapsed">
+                    <div class="row">
+                        <div class="col-12">
+                            <label>Goal Description:</label>
+                            <input type="text" class="form-control" [(ngModel)]="coppiedGoal[i].goal" (ngModelChange)="checkDuplicateGoal($event, i)">
+                            <span class="err-msg" *ngIf="errMsg || coppiedGoal[i].goal == ''">{{ coppiedGoal[i].goal == '' ? 'Goal description is required.' : errMsg}}</span>
+                        </div>
+                    </div>
+                    <div class="row margin-top15">
+                        <div class="col-12">
+                            <label>More Information:</label>
+                            <textarea class="form-control custom-field" [(ngModel)]="coppiedGoal[i].infoDescription"></textarea>
+                        </div>
+                    </div>
+                    <div class="row margin-top15">
+                        <div class="col-12 text-right">
+                            <input class="btn cancel-btn" name="Cancel" type="button" value="Cancel" (click)="goal.isCollapsed = !goal.isCollapsed">
+                            <input class="btn custom-primary margin-left5" name="Save" type="button" value="Update" (click)="updateGoal(coppiedGoal[i])" [disabled]="!coppiedGoal[i].goal || errMsg">
+                            <input class="btn cancel-btn margin-left5" name="Delete" type="button" value="Delete" (click)="deleteGoal(goal)">
+                        </div>
+                    </div>
+                </div>
+            </div>            
+        </div>
+        <div class="row container-footer">
+            <div class="col-12" *ngIf="selectedCategory && selectedCategory.categoryId != 0">
+                <button (click)="addGoal()" [disabled]="!selectedCategory">
+                    <i class="fa fa-plus-circle"></i>
+                    <span>Add New Goal</span>
+                </button>
+            </div>
+        </div>
+    </div>

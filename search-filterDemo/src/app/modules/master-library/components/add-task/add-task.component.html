@@ -1,0 +1,55 @@
+
+<div class="modal-wrapper">
+    <div class="modal-header goal-header">
+        <h1>{{title}}</h1>
+        <button (click)="bsModalRef.hide()" class="cross-btn">
+            <i class="fa fa-times"></i>
+        </button>
+    </div>
+    <div class="modal-body goal-body">
+        <div>
+            <div class="row margin-top5">
+                <div class="col-12">
+                    <label>Task Description</label>
+                    <input type="text" [(ngModel)]="taskDesc" class="form-control" [ngClass]="{'err-txtbox': errMsg}" (ngModelChange)="checkDuplicateTask($event)" maxlength="300" />
+                    <span class="err-msg" *ngIf="errMsg">{{errMsg}}</span>
+                </div>
+                <!--<input type="text" name="note" ng-class="{red: myTaskSearchForm.note.$error.required}"
+               ng-change="vm.callChange(vm.page.newTask.task)"
+               maxlength="300"
+               class="form-control custom-input-width" required />
+        <span style="color:red" ng-show="myTaskSearchForm.note.$dirty || myTaskSearchForm.note.$invalid">
+            <span ng-show="myTaskSearchForm.note.$error.required">Task is required.</span>
+        </span>-->
+                <!--<span style="color:red" ng-show="vm.page.isTaskExists">
+            <span ng-show="vm.page.isTaskExists">
+                Task is already exists.
+            </span>
+        </span>-->
+            </div>
+            <div class="row margin-top5">
+                <div class="col-12">
+                    <label>Assigned To</label><br />
+                    <span style="margin-right: 2rem;">
+                        <input value="vcfo" type="radio" name="assignedToTask" [(ngModel)]="assignedTo">CFO
+                    </span>
+                    <span>
+                        <input value="advisor" type="radio" name="assignedToTask" [(ngModel)]="assignedTo">Advisor
+                    </span>
+                </div>
+            </div>
+            <div class="row margin-top5">
+                <div class="col-12">
+                    <label>Note</label>
+                    <textarea class="form-control textarea-resize-none" name="info"></textarea>
+                </div>
+                </div>
+            </div>
+        </div>
+    <div class="modal-footer custom-footer">
+        <input type="button" class="btn cancel-btn" value="Cancel" name="Cancel" (click)="bsModalRef.hide()">
+        <input type="button" class="btn custom-primary" value="Add" name="Add" (click)="addTask()" [disabled]="!taskDesc || errMsg">
+    </div>
+</div>
+       
+

@@ -1,0 +1,347 @@
+<div class="core-plan container-fluid">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Current Plan</li>
+            </ol>
+          </nav>
+          <div class="core-plan-container clearfix">
+                <div class="row my-task-tab">
+
+                    <div class="col-1 active" (click)="switchViewFunc('T')" [ngClass]="{'active': switchView}">
+                        <button class="calendar-button">
+                            <i class="fa fa-table" aria-hidden="true"></i>
+                            <span>Table View</span>
+                        </button>
+                    </div>
+                    <div class="col-2" [ngClass]="{'active': !switchView}" >
+                        <button class="calendar-button" (click)="switchViewFunc('C')" [disabled]="corePlanGoals.actionplanId === null">
+                            <i class="fa fa-calendar-o" aria-hidden="true"></i>
+                            <span>Calendar View</span>
+                        </button>
+                    </div>
+                        
+                </div> 
+            <div class="form-group row custom-row" *ngIf="switchView">
+                <div class="col-sm-6">
+                  <label for="advisor" class="advisor-label">Advisor :</label>
+                  <input [(ngModel)]="advisor"
+                        id="advisor"
+                        [typeahead]="dataSource"                        
+                        (typeaheadOnSelect)="typeaheadOnSelect($event)" 
+                        (typeaheadNoResults)="typeaheadNoResults($event)"               
+                        typeaheadOptionField="namerepid"
+                        class="form-control custom-input">    
+                    <div *ngIf="noResult">No Results Found</div>  
+                </div>
+                
+                <div class="task-container" *ngIf="corePlanGoals.actionplanId">
+                     <button class="float-right" (click)="addNewGoal()">
+                        <i class="fa fa-plus-circle"></i>
+                        <span>Add New Goal</span>
+                    </button>
+                    <button class="float-right" (click)="reorderGoal()">
+                        <i class="fa fa-sort-amount-up"></i>
+                        <span>Rearrange Goals</span>
+                    </button>
+                </div>
+              </div>
+              <div class="row">
+                  <div class="col-sm-12">
+                    <h2 class="pull-left">Action Plan of <b> {{advisorName}}</b></h2>
+                    <div class="pull-right">
+                        <h2><span>CFO : </span><strong>{{corePlanGoals.vcfoUsername?corePlanGoals.vcfo:'CFO'}}</strong></h2>
+                    </div>
+                  </div>
+              </div>
+              <div class="plan-details-wrapper" *ngIf="switchView">
+                <div class="row">
+                    <div class="col-lg-8 col-12">
+                            <div class="task-date-info">
+                                <ul class="row">
+                                    <li class="col" [ngClass]="{'active': goalStatus===''}" (click)="expandedRow = -1; getActionPlan('')">
+                                        <div class="date-content">
+                                            <span>Total Active Goals</span>
+                                            <span class="number">{{corePlanGoals.totalGoals}}</span>
+                                        </div>
+                                    </li>                   
+                            
+                                    <li class="col" [ngClass]="{'active': goalStatus==='GoalsNeedingAttention'}" (click)="expandedRow= -1; getActionPlan('GoalsNeedingAttention')">
+                                        <div class="date-content">
+                                            <span class="square orange">
+                                                Goals Needing Attention
+                                            </span>
+                                            <span class="number">{{corePlanGoals.goalsNeedingAttention}}</span>
+                                        </div>
+
+                                    </li>
+                                    <li class="col" [ngClass]="{'active': goalStatus==='GoalsOnTrack'}" (click)="expandedRow = -1; getActionPlan('GoalsOnTrack')">
+                                        <div class="date-content">
+                                            <span class="square green">
+                                                Goals on Track
+                                            </span>
+                                            <span class="number">{{corePlanGoals.goalOnTrack}}</span>
+                                        </div>
+                                    </li>
+                                    <li class="col" [ngClass]="{'active': goalStatus==='CompletedGoals'}" (click)="expandedRow = -1; getActionPlan('CompletedGoals')">
+                                        <div class="date-content">
+                                            <span class="square darkgrey">
+                                                Completed Goals
+                                            </span>
+                                            <span class="number">{{corePlanGoals.totalActiveGoals}}</span>
+                                        </div>
+                                    </li> 
+                            </ul>
+                        </div>
+                    </div>
+            </div>
+                <div class="row">
+                    <div class="col-lg-8 col-12" *ngIf="!showGoals">
+                        <div class="border-box">No goals</div>
+                        
+                    </div>
+                </div>
+                
+            <div class="row">
+                <div *ngIf="showGoals" class="col-12"> 
+                    <div class="grid-details">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Goals</th>
+                                    <th>Goal Completion</th>
+                                    <th>Status</th>
+                                    <th>Category</th>
+                                    <th>% of Completion</th>
+                                    <th>Open Tasks</th>
+                                    <th>Completed Tasks</th>
+                                    <th>Status of Tasks <i class="fa fa-info-circle"></i></th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               
+                            <ng-template ngFor let-goal [ngForOf]="corePlanGoals.goals" let-index="index" [ngForTrackBy]="trackByFn">
+                                    <tr (click)="goal.visibleTask = !goal.visibleTask; expandRow(index)" [attr.aria-controls]="'collapseBasic' + index">
+                                            <td>
+                                                 <i class="fa fa-caret-right" *ngIf="!goal.visibleTask"></i>
+                                                 <i class="fa fa-caret-down" *ngIf="goal.visibleTask"></i>
+                                                 <span class="text-ellipsis" [title]="goal.goal">
+                                                    {{goal.goal | shortName:62}}
+                                                 </span>
+                                                 <span class="goal-target-text" [title]="goal.goalDescription" *ngIf="goal.goalDescription">
+                                                        <em>Goal Target:</em>
+                                                        {{goal.goalDescription | shortName:20}}
+                                                 </span>
+                                                
+                                            </td>
+                                            <td>
+                                                <span>{{goal.goalQuarter}} </span>
+                                            </td>
+                                            <td>
+                                                <span class="square" [ngClass]="goalConstant[goal.goalStatus]" [title]="goal.goalStatus">{{goal.goalStatus}}</span>
+                                            </td>
+                                            <td [title]="goal.category">{{goal.category | shortName:20}}</td>
+                                            <td>
+                                                <div [title]="goal.completionPercentage + '%'" class="progress-bar-contatainer">
+                                                    <div class="progress-bar" [ngStyle]="{'width' : goal.completionPercentage ? goal.completionPercentage+'%' : '0%'}"></div>
+                                                </div>
+                                                <span>{{goal.completionPercentage + '%'}}</span>
+                                            </td>
+                                            <td [title]="goal.openTasks">{{goal.openTasks}}</td>
+                                            <td [title]="goal.completedTasks">{{goal.completedTasks}}</td>
+                                            <td>
+                                                <span class="task-circle darkGrey">
+                                                    <span>{{goal.statusOfTasks.total ? goal.statusOfTasks.total : 0}}</span>
+                                                    <span class="task-toolTip pastDue">Total</span>
+                                                </span>
+                                                <span class="task-circle red">
+                                                    <span>{{goal.statusOfTasks.pastDue ? goal.statusOfTasks.pastDue : 0}}</span>
+                                                    <span class="task-toolTip pastDue">Past due</span>
+                                                </span>
+                                                <span class="task-circle blue">
+                                                    <span>{{goal.statusOfTasks.dueThisWeek ? goal.statusOfTasks.dueThisWeek : 0}}</span>
+                                                    <span class="task-toolTip largetext">Due Within a Week</span>
+                                                </span>
+                                                <span class="task-circle darkBlueGrey">
+                                                    <span>{{goal.statusOfTasks.next30DaysTask ? goal.statusOfTasks.next30DaysTask : 0}}</span>
+                                                    <span class="task-toolTip largetext">Future Tasks</span>
+                                                </span>
+                                                <span class="task-circle green">
+                                                    <span>{{goal.completedTasks ? goal.completedTasks : 0}}</span>
+                                                    <span class="task-toolTip days">Completed Tasks</span>
+                                                </span>
+                                                <span class="task-circle grey">
+                                                    <span>{{goal.statusOfTasks.notStarted ? goal.statusOfTasks.notStarted : 0}}</span>
+                                                    <span class="task-toolTip days">Not Started</span>
+                                                </span>
+            
+                                            </td>
+                                            <td>
+                                                <!-- Edit | Delete -->
+                                                <button class="custom-btn-Edit" (click)="editGoal(goal, $event)">
+                                                    Edit 
+                                                </button> | <button [disabled]="userType === analyst" class="custom-btn-Edit" (click)="deleteGoal(corePlanGoals, goal, $event)">                                
+                                                    Delete 
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                           <td colspan="9" class="expand-col">
+                                                <div class="expand-plan-details" [attr.id]="'collapseBasic' + index" [hidden]="!goal.visibleTask">
+                                                    <strong>Purpose</strong>
+                                                    <p [title]="corePlanGoals.goals[index].categoryPurpose">{{corePlanGoals.goals[index].categoryPurpose}}</p>
+                                                    <div class="plan-Task-Details">
+                                                        <div class="row">
+                                                            <div class="col-1">
+                                                                <strong>Tasks</strong>
+                                                            </div>
+                                                            <div class="col-3">
+                                                                    <button class="edit-popup-text" (click)="addTask(corePlanGoals, corePlanGoals.goals[index], index)">
+                                                                        Add New Task +
+                                                                    </button>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="row row-plan-details" *ngFor="let task of corePlanGoals.goals[index].tasks" [hidden]="task.dueDate === null">
+                                                            <div class="col-2">
+                                                                <p [title]="task.task">{{task.task | shortName:20}}</p>
+                                                                <span class="text-ellipsis" [title]="task.category">Category: {{task.category}}</span>
+                                                            </div>
+                                                            <div class="col-4 margin-top5">
+                                                                <div class="row">
+                                                                    <div class="col-6">
+                                                                        <img src="assets/img/owner.svg" class="img-width margin-bottom-r5"
+                                                                        *ngIf="task.vcfoOrAdvisor == 'VCFO'" >
+                                                                        <img src="assets/img/vCFOuser_Icon.svg" class="img-width margin-bottom-r5"
+                                                                        *ngIf="task.vcfoOrAdvisor != 'VCFO'" >
+                                                                        <span>{{task.vcfoOrAdvisor == 'VCFO' ?(task.ownerName?task.ownerName:'CFO') : 'Advisor'}}</span>
+                                                                    </div>
+                                                                    <div class="col-3">
+                                                                        <span class="bullet" [ngClass]="taskConstant[task.status]">{{task.status}}</span>
+                                                                    </div>
+                                                                    <div class="col-3" *ngIf="task.dueDate">
+                                                                        <span class="bullet" [ngClass]="taskConstant[task.status]">{{task.dueDate | date}}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <div class="row">
+                                                                    <div class="col-2">
+                                                                        <button class="edit-popup-text" (click)="editTask(task, goal, index)" [disabled]="goalStatus==='CompletedGoals'">
+                                                                            <img src="assets/img/edit.svg"> Edit
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="col-2">
+                                                                        <button [disabled]="userType === analyst" class="edit-popup-text" (click)="deleteTask(corePlanGoals, task, index)">
+                                                                            <i class="fa fa-trash"></i> Delete
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="col-3">
+                                                                        <button class="edit-popup-text" (click)="addNotes(task, goal, index)">
+                                                                            <img src="assets/img/notes.svg"> 
+                                                                            {{task.totalNote > 0 ? 'View Notes' : 'Add Notes'}}
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="col-2 padding-l-r8">
+                                                                        <button class="edit-popup-text" (click)="reassignTask(task, goal, index)" [disabled]="task.vcfoOrAdvisor == 'Advisor'" >
+                                                                            <img src="assets/img/Reassign-Icon.png" class="reassign-Img"> Reassign
+                                                                        </button>
+                                                                    </div>
+                                                                    <!--<div class="col-2 padding-l-r8" *ngIf="userType === analyst">
+                                                                        <button class="edit-popup-text" (click)="reassignTask(task, goal, index)" [disabled]="task.vcfoOrAdvisor == 'Advisor' || task.internalAssignTo !== currentUser.userName" >
+                                                                            <img src="assets/img/Reassign-Icon.png" class="reassign-Img"> Reassign
+                                                                        </button>
+                                                                    </div>-->
+                                                                    <div class="col-3">
+                                                                        <button class="edit-popup-text" (click)="markAsComplete(task.actionPlanDetailId, index)" [disabled]="goalStatus==='CompletedGoals' || userType === analyst">
+                                                                                <i class="fa fa-check"></i>Mark Complete
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row margin-top5 row-plan-details" *ngIf="(corePlanGoals.goals[index].tasks | dueDate:'')?.length <= 0">
+                                                            <div class="col-12 text-center">
+                                                                No open tasks
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="row margin-top5" *ngIf="corePlanGoals.goals[index].completedTasks > 0 && goalStatus != 'CompletedGoals'">
+                                                            <div class="col-5">
+                                                                    <i class="fa fa-check green-tick"></i>
+                                                                    <button class="edit-popup-text" (click)="completedTasks(goal)">
+                                                                        View {{corePlanGoals.goals[index].completedTasks}} Completed Tasks
+                                                                        <i class="fa fa-sort-down"></i>
+                                                                    </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="plan-Task-Details" *ngIf="(corePlanGoals.goals[index].tasks | dueDate:null)?.length >0">
+                                                        <div class="row" >
+                                                            <div class="col-2">
+                                                                <strong>Tasks Without Due Date</strong>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row row-plan-details" *ngFor="let task of corePlanGoals.goals[index].tasks" [hidden]="task.dueDate != null">
+                                                            <div class="col-2">
+                                                                <p class="text-ellipsis" [title]="task.task">{{task.task | shortName:20}}</p>
+                                                                <span class="text-ellipsis" [title]="task.category">Category: {{task.category}}</span>
+                                                            </div>
+                                                            <div class="col-4 margin-top5">
+                                                                <div class="row">
+                                                                    <div class="col-6">
+                                                                            <img src="assets/img/owner.svg" class="img-width margin-bottom-r5"
+                                                                            *ngIf="task.vcfoOrAdvisor == 'VCFO'" >
+                                                                            <img src="assets/img/vCFOuser_Icon.svg" class="img-width margin-bottom-r5"
+                                                                            *ngIf="task.vcfoOrAdvisor != 'VCFO'" >
+                                                                            <span>{{task.vcfoOrAdvisor == 'VCFO' ?(task.ownerName?task.ownerName:'CFO'): 'Advisor'}}</span>
+                                                                    </div>
+                                                                    <div class="col-3">
+                                                                        <span>TBD</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-6 margin-top5">
+                                                                <div class="row">
+                                                                    <div class="col-4">
+                                                                        <button class="edit-popup-text" (click)="editTask(task, goal, index)">
+                                                                                <img src="assets/img/edit.svg"> Edit
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="col-4">
+                                                                        <button [disabled]="userType === analyst" class="edit-popup-text" (click)="deleteTask(corePlanGoals, task, index)">
+                                                                                <i class="fa fa-trash"></i> Delete
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="col-4">
+                                                                        <button class="edit-popup-text" (click)="addNotes(task, goal, index)">
+                                                                            <img src="assets/img/notes.svg"> 
+                                                                            {{task.totalNote > 0 ? 'View Notes' : 'Add Notes'}}
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                            </ng-template>
+                                
+                               
+                                
+                            </tbody>
+                        </table>
+                    </div>
+              </div>
+          </div>
+    
+        
+        </div>
+        <app-home-calendar *ngIf="!switchView" [repId]='repId'></app-home-calendar>
+    </div>
+    
+</div>

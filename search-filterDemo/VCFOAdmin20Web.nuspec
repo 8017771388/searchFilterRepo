@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>VCFOAdmin2.0.Web</id>
+    <version>1.0.0.0</version>
+    <title>VCFOAdmin2.0</title>
+    <authors>Sumija</authors>
+    <owners>Sumija, Hiranmoy, Marissa</owners>
+    <description>VCFOAdmin2.0  Web Application</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2018</copyright>
+  </metadata>
+  <files>
+    <file src="dist\VCFOAdminWeb\**\*.*" target="\" exclude="dist\VCFOAdminWeb\assets\configEnvironment.js;dist\VCFOAdminWeb\assets\token.configEnvironment.js;" />
+    <file src="dist\VCFOAdminWeb\assets\token.configEnvironment.js" target="\assets\configEnvironment.js" />
+    <!--<file src="web.config" target="\" />-->
+  </files>
+</package>

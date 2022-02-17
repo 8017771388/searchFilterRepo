@@ -1,0 +1,118 @@
+<!-- <p>
+  coamaintenance works!
+</p> -->
+<div class="row col-centered">
+
+    <div class="pb-2 mt-3 mb-3 col-md-4 offset-md-4">
+        <h4>Advisor COA To LPL COA Mapping</h4>
+    </div>
+</div>
+<div class="row  mt-4">
+    <div class="col-sm-auto offset-sm-3 font-weight-bold">
+        <label>Select Advisor:</label>
+    </div>
+    <div *ngIf="advisorimportresponse" style="padding-left:32px;" class="col-sm-4">
+        <select class="form-control" (change)="onAdvisorImporExportEntityDetailsChange($event.target.value)" [(ngModel)]="selectedvalue">
+        <option value="">Select Advisor</option>
+        <option *ngFor="let advimpres of advisorimportresponse.listAdvisorImporExportEntityDetails" value="{{advimpres.advisorEmail}}_{{advimpres.lplAdvisorRelmID}}">{{advimpres.advisorEmail}}</option>
+        
+      </select>
+
+    </div>
+
+
+    <div *ngIf="coaMappingreqmodelobj && selectedvalue" class="col-sm-1 offset-sm-2">
+
+        <input type="button" id="subBtn" name="submitButton" value="Save COA Mapping" class="btn btn-success" (click)="lplCOAmappingClick()" />
+
+    </div>
+
+    <!-- <div class="col-sm-5" id="lplQBO" style="visibility:visible" *ngIf="advisorImpexptentitydetails" >
+
+        <span id="lplQBOVal" *ngIf="advisorImpexptentitydetails.advisorLPLQBOEmail" name="lplQBOVal">LPLQBO Email : {{advisorImpexptentitydetails.advisorLPLQBOEmail}}</span>
+       
+
+    </div> -->
+</div>
+<div class="row" style="padding-top: 21px;" *ngIf="selectedvalue && coaMappingreqmodelobj">
+    <div class="col-sm-auto offset-sm-3 font-weight-bold">
+        <label>Select COA View:</label>
+    </div>
+    <div style="padding-left:18px;" class="col-sm-4">
+        <select class="form-control" (change)="onCOAMappingStatusChange($event.target.value)" [(ngModel)]="selectedMSvalue">
+        <option value="">All</option>
+        <option value="M">Mapped </option>
+        <option value="U">UnMapped </option>
+        
+      </select>
+
+    </div>
+</div>
+<div class="row" style="padding-top: 21px;" *ngIf="selectedvalue && coaMappingreqmodelobj">
+    <div class="col-md-12" *ngIf="Updatestatus">
+        <div class="alert alert-success alert-dismissible" *ngIf="Updatestatus.Status=='success'">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a> COA Mapping Saved Successfully.
+        </div>
+
+        <div class="alert alert-danger alert-dismissible" *ngIf="Updatestatus.Status =='Error'">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a> Some error occured during Coa Mapping Save Process.
+        </div>
+    </div>
+    <!-- {{coaMappingreqmodelobj.coaMapping | json}} -->
+    <div class="col-md-6">
+
+        <dx-data-grid id="gridContainer" [dataSource]="coaMappingreqmodelobj.coaMapping"[showColumnLines]="true"
+        [showRowLines]="true"
+        [showBorders]="true">
+
+            
+            <dxo-paging [(pageIndex)]="pagenum">
+                <!-- Shows the second page -->
+            </dxo-paging>
+            <dxi-column dataField="advisorCOAType" caption="Type"></dxi-column>
+            <dxi-column dataField="advisorCOADetailType" caption="Detail Type"></dxi-column>
+            <dxi-column dataField="advisorCOAAccountNo" caption="Account#"></dxi-column>
+            <dxi-column dataField="advisorCOAName" caption="Name"></dxi-column>
+        </dx-data-grid>
+
+    </div>
+    <div class="col-md-6" *ngIf="coaMasterDataResponse && selectedvalue && coaMappingreqmodelobj">
+
+
+        <dx-data-grid id="gridContainer" [dataSource]="coaMappingreqmodelobj.coaMapping" [repaintChangesOnly]="true" (onEditorPreparing)="onEditorPreparing($event)" 
+        (onRowUpdated)="onRowUpdated($event)" (onRowRemoving)="onRowRemoving($event)" [showColumnLines]="true"
+        [showRowLines]="true"
+        [showBorders]="true">
+            <dxo-paging [(pageIndex)]="pagenum">
+                <!-- Shows the second page -->
+            </dxo-paging>
+            <dxo-editing mode="batch" [allowUpdating]="true" [allowDeleting]="true">
+            </dxo-editing>
+            <!-- <dxo-sorting mode="none">
+                 or "multiple" | "none"
+            </dxo-sorting> -->
+
+            <dxi-column dataField="lplcoaType" caption="Type" [setCellValue]="setStateValue">
+                <dxi-validation-rule type="required"></dxi-validation-rule>
+                <dxo-lookup [dataSource]="Typedd" displayExpr="id" valueExpr="value">
+                </dxo-lookup>
+
+            </dxi-column>
+            <dxi-column dataField="lplcoaDetailType" caption="Detail Type" [setCellValue]="setDetailTypeValue">
+                <dxi-validation-rule type="required"></dxi-validation-rule>
+                <dxo-lookup [dataSource]="getFilteredSubtypes" displayExpr="id" valueExpr="value">
+                </dxo-lookup>
+            </dxi-column>
+
+            <dxi-column dataField="lplcoaAccountNo" caption="Account#" [setCellValue]="setAccountNumValue">
+                <dxi-validation-rule type="required"></dxi-validation-rule>
+                <dxo-lookup [dataSource]="getFilteredAccountNum" displayExpr="id" valueExpr="value">
+                </dxo-lookup>
+            </dxi-column>
+            <dxi-column dataField="lplcoaName" caption="Name">
+                <dxi-validation-rule type="required"></dxi-validation-rule>
+            </dxi-column>
+        </dx-data-grid>
+    </div>
+
+</div>

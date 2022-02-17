@@ -1,0 +1,260 @@
+
+/* ---------------------------------------------------
+    CONTENT STYLE
+----------------------------------------------------- */
+
+.home-content {
+    width: 100%;
+    padding: 20px;
+    transition: all 0.3s;
+
+    .text-search-button{
+        padding-left: 8px;
+        padding-right: 8px;
+        font-size: 14px;
+        background: #0084d4;
+        color: #fff;
+        border:none;
+        border-radius: 0 5px 5px 0;
+        -webkit-border-radius: 0 5px 5px 0;
+        -moz-border-radius:0 5px 5px 0;
+        height: 32px;
+    }
+    .search-advisor{
+        font-size: 12px;
+    }
+
+    .advisor-panel-search{
+        margin-left: -2px;
+        z-index: 100;
+        .text-search-button{
+            height: 38px;
+        }
+    }
+
+    .input-group-search{
+        padding-left: 0;
+    }
+    
+    .reset-field{
+        position: relative; 
+     
+        .clear-search{
+             position: absolute;
+             top: 13px;    
+             right: 7px;
+        }
+     }
+
+   .clear{
+       margin-left: 10px;
+   }
+    .darkgrey {
+        background: #5a5858;
+    }
+    .redcolor {
+        background: #ad0000;
+    }
+    .bluecl {
+        background: #0077cc;
+    }
+    .darkBlueGrey {
+        background: #384455;
+    }
+    .green {
+        background: #478a00;
+    }
+    .blue {
+        color: #0073ec;
+    }
+   .gray {
+        background: gray;
+    }
+    .total-records{
+        position: relative;
+        float: left;
+        color: #000;
+        font-family: "roboto-condensed";
+        font-weight: 300;
+        font-size: 22px;
+        line-height: 24px;
+    }
+
+    .due-date{
+        margin-bottom:20px;
+
+        label{
+            color: #444444;
+            font-size: 12px;
+            font-weight:700;
+            padding: 0 10px;
+        }
+        
+    }
+
+    .taskCircle {
+        width: 26px;
+        height: 26px;
+        border-radius: 20px;
+        -webkit-border-radius: 26px;
+        -moz-border-radius: 20px;
+        color: #fff;
+        display: inline-block;
+        padding: 1px;
+        font-size: 11px;
+        text-align: center;
+        margin-right: 3px;
+        position: relative;
+        line-height: 23px;
+    }
+    .taskName {
+        cursor: pointer;
+        font-family: 'Roboto Regular', sans-serif;
+        font-size: 12px;
+        line-height: 18px;
+        color: #0076C8;
+        &:hover{
+            color: #005895;
+            text-decoration: underline;
+        }
+    }
+
+    // .my-task-tab{
+    //     padding:10px;
+    //     .active{
+    //         .fa{
+    //             color:#0086ea
+    //         }
+    //         span{
+    //             color:#0086ea;
+    //         }
+    //     }
+    //     .fa {
+    //         font-size:16px;
+    //         color:#ccc;
+    //         cursor:pointer;
+    //     }
+    //     span{
+    //     font-size: 16px;
+    //     font-family:"roboto-condensed";
+    //     color:#ccc;
+    //     padding: 5px;
+    //     cursor:pointer;
+    //     }
+        
+    // }
+        
+}
+
+.notification{
+    position:relative;
+    font-size: 18px;
+    float: left;
+    padding-left: 20px;
+    .fa{
+        color:#008ff5;
+        cursor: pointer;
+    }
+    span {
+        position: absolute;
+        font-size:12px;
+        left: 25px;
+        top: -11px;
+        color:#008ff5;
+        padding: 0;
+        width: 18px;
+        border-radius: 15px;
+        -moz-border-radius:15px;
+        -webkit-border-radius:15px;
+        text-align: center;
+        border: 1px solid #008ff5;
+        background-color: white;
+                
+    }
+    &.deactive{
+        .fa{
+            color:#ccc;
+        }                
+    }
+}
+
+.status-info {
+    text-align: right;
+    .bullet{
+        background: transparent;
+        &:after {
+            content: " ";
+            width: 10px;
+            height: 10px;
+            border-radius: 10px;
+            -webkit-border-radius: 10px;
+            -moz-border-radius: 10px;
+            position: absolute;
+            left: -4px;
+            top: 6px;
+            z-index: 100;
+        }
+        &.darkgrey{
+            &:after {
+                background: #5a5858;
+            }
+        }
+        &.redcolor{
+            &:after {
+                background: #ad0000;
+            }
+        }
+        &.bluecl{
+            &:after {
+                background: #0077cc;
+            }
+        }
+        &.darkBlueGrey{
+            &:after {
+                background: #384455;
+            }
+        }
+        &.green{
+            &:after {
+                background: #478a00;
+            }
+        }
+        &.gray{
+            &:after {
+                background: gray;
+            }
+        }
+    }
+    .textdsn {
+        font-size: 11px;
+        position: relative;
+        padding: 5px 12px 5px 8px;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ---------------------------------------------------
+    MEDIAQUERIES
+----------------------------------------------------- */
+
+@media (max-width: 768px) {
+    .sidebar {
+        margin-left: -250px;
+        &.active {
+            margin-left: 0;
+        }
+    }
+     
+}

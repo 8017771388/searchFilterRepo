@@ -1,0 +1,64 @@
+.modal-wrapper{
+    padding:20px;
+    .add-header{
+        padding:15px;
+        font-size:25px;
+        font-family: "roboto-condensed";
+        color:#0076c8;
+        text-align: center;
+        border-bottom:0;
+        span{
+            margin:0 auto;
+        }
+    }
+    .custom-calendar-row{
+        margin-bottom:25px;
+    }
+    .padding-right-0{
+        padding-right: 0;
+    }  
+    .calendar-field {
+        border-radius: 0;
+        font-size:12px;
+        height:40px;
+        &.grey {
+            background: #e8e8e8;
+        }
+        &.text-area-resize{
+            resize: none;
+            height:auto;
+        }
+    }
+    .modal-footer{
+        border-top:0;
+        .bottun-container{
+            margin:0 auto;
+        }
+        .btn-submit{
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            border-radius: 0; 
+            color: #fff;
+            background-color: #0076c8;
+            border: 1px solid #0076c8;
+            padding: 8px 30px;
+            margin-right: 5px;
+        }
+        
+        .btn-cancel{
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            border-radius: 0; 
+            color: #0076c8;
+            border: 1px solid #0076c8;
+            padding:8px 30px;
+            margin-right: 5px;
+            &:hover{
+                background-color: transparent;
+            }
+        }
+        
+       
+    }
+    
+}
